@@ -43,7 +43,7 @@ readonly G_META_VARISCITE_BSP_REV="6f0da78ae78e8222ddb644a1b7def0b9b0433906"
 readonly G_META_VARISCITE_BSP_COMMON_SRC_DIR="${DEF_SRC_DIR}/meta-variscite-bsp-common"
 readonly G_META_VARISCITE_BSP_COMMON_GIT="https://github.com/varigit/meta-variscite-bsp-common"
 readonly G_META_VARISCITE_BSP_COMMON_BRANCH="dunfell-var01"
-readonly G_META_VARISCITE_BSP_COMMON_REV="465e535b11902cb653bfdd0e9dd4bd5b92139c2a"
+readonly G_META_VARISCITE_BSP_COMMON_REV="e1b1573ddf0d2f362050e93f75f1d5c16a11d7d4"
 
 # meta-variscite-sdk-ti
 readonly G_META_VARISCITE_SDK_SRC_DIR="${DEF_SRC_DIR}/meta-variscite-sdk-ti"

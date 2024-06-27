@@ -116,14 +116,14 @@ readonly VAR_GPIO_UTILS_DIR="${G_META_VARISCITE_BSP_COMMON_SRC_DIR}/recipes-supp
 
 # Broadcom BT/WIFI firmware
 readonly G_BRCM_FW_SRC_DIR="${DEF_SRC_DIR}/brcmfw"
-readonly G_BRCM_FW_REV="10.54.0.13"
+readonly G_BRCM_FW_REV="11.171.0.24"
 readonly MODEL_LIST="${MACHINE}"
 readonly G_BRCM_LWB_FW_ARCHIVE="laird-lwb-fcc-firmware-${G_BRCM_FW_REV}.tar.bz2"
 readonly G_BRCM_LWB_FW_LINK="https://github.com/LairdCP/Sterling-LWB-and-LWB5-Release-Packages/releases/download/LRD-REL-${G_BRCM_FW_REV}/${G_BRCM_LWB_FW_ARCHIVE}"
-readonly G_BRCM_LWB_FW_SHA256SUM="8faa105e036a9f8bffe2857f5d9f5ce539521ef8624b59069290579440228ac5"
+readonly G_BRCM_LWB_FW_SHA256SUM="ff240c8c9ce0e7f19003dba72be93d34bc13a40b76292f2ec25dc6e248dd96aa"
 readonly G_BRCM_LWB5_FW_ARCHIVE="laird-lwb5-fcc-firmware-${G_BRCM_FW_REV}.tar.bz2"
 readonly G_BRCM_LWB5_FW_LINK="https://github.com/LairdCP/Sterling-LWB-and-LWB5-Release-Packages/releases/download/LRD-REL-${G_BRCM_FW_REV}/${G_BRCM_LWB5_FW_ARCHIVE}"
-readonly G_BRCM_LWB5_FW_SHA256SUM="583e2b328a185f545e1c5de55acaf3ae092cdbc791a62ff005c5559515488f7f"
+readonly G_BRCM_LWB5_FW_SHA256SUM="b13f95ea9c458a3e1a1a97539ca31e739531c317d85abe66d7dadfd111dd02e2"
 
 # BlueZ
 readonly BLUEZ5_DIR="${G_META_VARISCITE_BSP_COMMON_SRC_DIR}/recipes-connectivity/bluez5/files"

@@ -97,7 +97,7 @@ readonly KERNEL_DTB_IMAGE_PATH="arch/arm64/boot/dts/ti/"
 readonly G_LINUX_KERNEL_SRC_DIR="${DEF_SRC_DIR}/kernel"
 readonly G_LINUX_KERNEL_GIT="https://github.com/varigit/ti-linux-kernel.git"
 readonly G_LINUX_KERNEL_BRANCH="ti-linux-5.10.y_var01"
-readonly G_LINUX_KERNEL_REV="dd3008efa2ad7ea806c4b9c2fb6ff464ea526eea"
+readonly G_LINUX_KERNEL_REV="50c3393d89cf09b58c229f34de2175f438654656"
 readonly G_LINUX_KERNEL_DEF_CONFIG='am62x_var_defconfig'
 readonly G_LINUX_DTB="ti/k3-am625-var-som-symphony.dtb"
 

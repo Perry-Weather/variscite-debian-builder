@@ -1,0 +1,62 @@
+From 7ea628a04b5ca5dac050a8539928371a033272d1 Mon Sep 17 00:00:00 2001
+From: keyur-mpc <keyur@mpconsultants.org>
+Date: Fri, 4 Aug 2023 17:46:33 +0000
+Subject: [PATCH 09/14] Configured the phy reset gpio to fec node
+
+---
+ ...mx6ull-var-som-concerto-board-emmc-wifi.dts | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+index 586e39116eb8..08dd8f1a37f8 100644
+--- a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
++++ b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+@@ -77,10 +77,6 @@
+             gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+             default-state = "on";
+         };
+-        enet_rst {
+-            gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
+-        };
+         bg95_rst {
+             gpios = <&gpio5 9 GPIO_ACTIVE_HIGH>;
+             default-state = "on";
+@@ -162,14 +158,20 @@
+ 			MX6UL_PAD_LCD_DATA20__GPIO3_IO25 0x1b0b0
+ 			MX6UL_PAD_LCD_DATA13__GPIO3_IO18 0x1b0b0
+ 			MX6UL_PAD_GPIO1_IO02__GPIO1_IO02 0x1b0b0
+-			MX6UL_PAD_UART5_RX_DATA__GPIO1_IO31 0x1b0b0
+ 			MX6UL_PAD_LCD_DATA02__GPIO3_IO07 0x1b0b0
+ 			MX6UL_PAD_CSI_DATA02__GPIO4_IO23 0x1b0b0
+ 			MX6UL_PAD_GPIO1_IO05__GPIO1_IO05 0x1b0b0
+ 		>;
+ 	};
++
++    pinctrl_java_enet2_gpio: javaenet2_gpiogrp {
++        fsl,pins = <
++            MX6UL_PAD_UART5_RX_DATA__GPIO1_IO31	0x1b0b0 /* fec2 reset */
++        >;
++    };
+ };
+ 
++/* SVNS pad needs to be configured in iomuxc_snvs */
+ &iomuxc_snvs {
+    pinctrl_java_gpio_snvs: javagpiogrpsnvs {
+ 		fsl,pins = <
+@@ -180,6 +182,12 @@
+ 	};
+ };
+ 
++/* Updated phy enet-rst gpio is GPIO_1_31 */
++&fec2 {
++	pinctrl-0 = <&pinctrl_enet2>, <&pinctrl_java_enet2_gpio>, <&pinctrl_enet2_mdio>;
++	phy-reset-gpios=<&gpio1 31 GPIO_ACTIVE_LOW>;
++};
++
+ /* wdog to avoid confclicts with ADC Pin */
+ &wdog1 {
+     /delete-property/ pinctrl-names;
+-- 
+2.25.1
+

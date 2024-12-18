@@ -1,0 +1,85 @@
+From 81f89c702e5e82c7158aaec446fd4bbe20883bad Mon Sep 17 00:00:00 2001
+From: keyur-mpc <keyur@mpconsultants.org>
+Date: Fri, 15 Sep 2023 07:23:59 +0000
+Subject: [PATCH 12/14] Make default state of the gpio-leds as off
+
+---
+ ...x6ull-var-som-concerto-board-emmc-wifi.dts | 26 +++++++++----------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+index 08dd8f1a37f8..a94f3bc8bf6d 100644
+--- a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
++++ b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+@@ -51,55 +51,55 @@
+ 		status = "okay";
+         dwx_ls {
+             gpios = <&gpio3 9 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         solar_ls {
+             gpios = <&gpio3 22 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         bg95_ls {
+             gpios = <&gpio3 8 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         weather_ls {
+             gpios = <&gpio3 17 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         eth_ls {
+             gpios = <&gpio3 25 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         aqi_ls {
+             gpios = <&gpio3 18 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         batt_ls {
+             gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         bg95_rst {
+             gpios = <&gpio5 9 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         camera_ls {
+             gpios = <&gpio3 7 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         boost1_en {
+             gpios = <&gpio5 7 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         boost2_en {
+             gpios = <&gpio5 3 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         strobe_in {
+             gpios = <&gpio4 23 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+         dwx_rst {
+             gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+-            default-state = "on";
++            default-state = "off";
+         };
+     };
+ };
+-- 
+2.25.1
+

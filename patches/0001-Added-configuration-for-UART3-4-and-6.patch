@@ -1,0 +1,95 @@
+From 06d277223251b54a88888060db069d48099a672a Mon Sep 17 00:00:00 2001
+From: keyur-mpc <keyur@mpconsultants.org>
+Date: Tue, 1 Aug 2023 15:40:04 +0000
+Subject: [PATCH 01/14] Added configuration for UART3,4 and 6. Disabled/deleted
+ node which was using the same PAD for the above
+
+Changes done in the dts for emmc : imx6ull-var-som-concerto-board-emmc-wifi.dts
+---
+ ...x6ull-var-som-concerto-board-emmc-wifi.dts | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+
+diff --git a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+index 6138f6e51abf..212138c8ec0e 100644
+--- a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
++++ b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+@@ -19,4 +19,76 @@
+ / {
+ 	model = "Variscite VAR-SOM-6UL with i.MX6ULL, eMMC & WiFi support on Concerto-Board";
+ 	compatible = "variscite,imx6ul-var-som", "fsl,imx6ull";
++
++    /* MPC changes*/
++    /delete-node/ pinctrl_gpio_leds;
++    /delete-node/ leds;
++};
++
++/* MPC changes*/
++&can1 {
++	status = "disabled";
++};
++
++&usbotg1 {
++	status = "disabled";
++};
++
++&i2c1 {
++	status = "disabled";
++};
++
++&iomuxc {
++    pinctrl_uart3: uart3grp {
++        fsl,pins = <
++            MX6UL_PAD_UART3_TX_DATA__UART3_DCE_TX	0x1b0b1
++            MX6UL_PAD_UART3_RX_DATA__UART3_DCE_RX	0x1b0b1
++            // MX6UL_PAD_UART3_CTS_B__GPIO1_IO26	0x1b0b1
++            MX6UL_PAD_UART3_RTS_B__GPIO1_IO27	    0x130b1
++        >;
++    };
++
++    pinctrl_uart4: uart4grp {
++        fsl,pins = <
++            MX6UL_PAD_UART4_TX_DATA__UART4_DCE_TX	0x1b0b1
++            MX6UL_PAD_UART4_RX_DATA__UART4_DCE_RX	0x1b0b1
++        >;
++    };
++
++    pinctrl_uart6: uart6grp {
++        fsl,pins = <
++            MX6UL_PAD_CSI_MCLK__UART6_DCE_TX	0x1b0b1
++            MX6UL_PAD_CSI_PIXCLK__UART6_DCE_RX	0x1b0b1
++            // MX6UL_PAD_NAND_CE1_B__GPIO4_IO14	0x1b0b1
++            MX6UL_PAD_UART5_TX_DATA__GPIO1_IO30	0x130b1
++        >;
++    };
++};
++
++/* ttymxc2 UART */
++&uart3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart3>;
++	fsl,uart-has-rtscts;
++	linux,rs485-enabled-at-boot-time;
++	rs485-rts-active-high;
++	status = "okay";
++};
++
++/* ttymxc3 UART */
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart4>;
++	/*fsl,uart-has-rtscts;*/
++	status = "okay";
++};
++
++/* ttymxc5 UART */
++&uart6 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart6>;
++	fsl,uart-has-rtscts;
++	linux,rs485-enabled-at-boot-time;
++	rs485-rts-active-high;
++	status = "okay";
+ };
+-- 
+2.25.1
+

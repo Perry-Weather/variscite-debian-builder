@@ -35,6 +35,7 @@ readonly G_ROOTFS_DIR="${DEF_BUILDENV}/rootfs"
 readonly G_TMP_DIR="${DEF_BUILDENV}/tmp"
 readonly G_TOOLS_PATH="${DEF_BUILDENV}/toolchain"
 readonly G_VARISCITE_PATH="${DEF_BUILDENV}/variscite"
+readonly G_PW_PATH="${DEF_BUILDENV}/PW"
 
 #64 bit CROSS_COMPILER config and paths
 readonly G_CROSS_COMPILER_64BIT_NAME="gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu"
@@ -51,7 +52,18 @@ readonly G_CROSS_COMPILER_32BIT_PREFIX="arm-linux-gnueabihf-"
 readonly G_CROSS_COMPILER_JOPTION="-j 4"
 
 #### user rootfs packages ####
-readonly G_USER_PACKAGES=""
+readonly G_USER_PACKAGES=" \
+	git \
+	vim \
+	libpoco-dev \
+	ffmpeg \
+	alsa-utils \
+	mpg123 \
+	minicom \
+	iw \
+	ntpdate \
+	awscli \
+	libmosquitto-dev"
 
 export LC_ALL=C
 
@@ -797,7 +809,7 @@ EOF
 	rm -f ${UBIFS_IMG}
 
 	pr_info "Creating $UBIFS_IMG image"
-	mkfs.ubifs -x zlib -m 2048  -e 124KiB -c 3965 -r ${UBIFS_ROOTFS_DIR} $UBIFS_IMG
+	mkfs.ubifs -x zlib -m 2048  -e 124KiB -c 8192 -r ${UBIFS_ROOTFS_DIR} $UBIFS_IMG
 
 	pr_info "Creating $UBI_IMG image"
 	ubinize -o ${UBI_IMG} -m 2048 -p 128KiB -s 2048 -O 2048 ${UBI_CFG}

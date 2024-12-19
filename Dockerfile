@@ -22,8 +22,41 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c bootloader
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
-# set G_USER_PACKAGES to install the poco libs and mosquitto
-COPY patches . 
+COPY patches . # TODO move this to before Kernel, since all patches affect the kernel build
+# This step takes a long time. We should avoid making changes to things above this line 
 RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
+
+# The below steps copy all the java-board specific files into the final image.
+# Steps after this are small and fast, and so they should complete quickly
+# Allowing us to (in most cases) iterate and build images in seconds instead of hours.
+
+COPY firmware/scripts/java_init.service /workdir/rootfs/lib/systemd/system/
+COPY firmware/scripts/java_init.sh /workdir/rootfs/usr/bin/
+
+COPY firmware/scripts/cellular/java_cellular.sh /workdir/rootfs/usr/bin/
+COPY firmware/scripts/cellular/quectel-CM /workdir/rootfs/usr/bin/
+COPY firmware/scripts/cellular/cellular_connection.service /workdir/rootfs/lib/systemd/system/
+
+COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
+COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/
+
+COPY /java-server /workdir/rootfs/usr/bin/
+RUN	mkdir -p /workdir/rootfs/opt/webserver/
+COPY firmware/resources/ /workdir/rootfs/opt/webserver/
+
+COPY firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
+COPY firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
+COPY firmware/scripts/logrotate/logrotate /workdir/rootfs/etc/cron.hourly/logrotate
+RUN rm /workdir/rootfs/etc/cron.daily/logrotate
+
+RUN mkdir -p /workdir/rootfs/opt/webserver/logs/
+
+RUN mkdir -p /workdir/rootfs/opt/ota/
+RUN mkdir -p /workdir/rootfs/opt/ota/zip/
+RUN	mkdir -p /workdir/rootfs/opt/ota/firmwares/
+
+COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
+COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
+
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

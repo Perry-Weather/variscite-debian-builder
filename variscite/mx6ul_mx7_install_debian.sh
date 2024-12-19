@@ -303,51 +303,11 @@ install_rootfs_to_emmc()
 	set_fw_utils_to_emmc_on_emmc
 
 	# PW
-	echo "Copying init service and script"
-	cp firmware/scripts/java_init.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
+	echo "Linking init service"
 	ln -s /lib/systemd/system/java_init.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/java_init.service
-	cp firmware/scripts/java_init.sh ${mountdir_prefix}${rootfspart}/usr/bin/
 
-	echo "Copying PPP service and script"
-	cp firmware/scripts/ppp/java_pppd.sh ${mountdir_prefix}${rootfspart}/usr/bin/
-	cp firmware/scripts/ppp/ppp@.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
-	ln -s /lib/systemd/system/ppp@.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/ppp@quectelppp.service
-	cp firmware/scripts/ppp/quectelppp ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
-	cp firmware/scripts/ppp/quectel-chat-connect ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
-	cp firmware/scripts/ppp/quectel-chat-disconnect ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
-
-	echo "Copying Cellular Connection and scripts"
-	cp firmware/scripts/cellular/java_cellular.sh ${mountdir_prefix}${rootfspart}/usr/bin/
-	cp firmware/scripts/cellular/quectel-CM ${mountdir_prefix}${rootfspart}/usr/bin/
-	cp firmware/scripts/cellular/cellular_connection.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
+	echo "Linking Cellular Connection"
 	ln -s /lib/systemd/system/cellular_connection.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/cellular_connection.service
-
-	echo "Copying the udhcp server configuration file"
-	cp firmware/scripts/udhcpd ${mountdir_prefix}${rootfspart}/etc/default/
-	cp firmware/scripts/udhcpd.conf ${mountdir_prefix}${rootfspart}/etc/
-
-	echo "Copying java-server application and resource required for it"
-	cp /java-server ${mountdir_prefix}${rootfspart}/usr/bin/
-	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/
-	cp -r firmware/resources/ ${mountdir_prefix}${rootfspart}/opt/webserver/
-
-	echo "Copying updated logrotate script"
-	cp firmware/scripts/logrotate/rsyslog ${mountdir_prefix}${rootfspart}/etc/logrotate.d/rsyslog
-	cp firmware/scripts/logrotate/logrotate.timer ${mountdir_prefix}${rootfspart}/lib/systemd/system/logrotate.timer
-	cp firmware/scripts/logrotate/logrotate ${mountdir_prefix}${rootfspart}/etc/cron.hourly/logrotate
-	rm ${mountdir_prefix}${rootfspart}/etc/cron.daily/logrotate
-
-	echo "Creating the directory needed for the logs"
-	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/logs/
-
-	echo "Creating directory needed for the OTA"
-	mkdir -p ${mountdir_prefix}${rootfspart}/opt/ota/
-	mkdir -p ${mountdir_prefix}${rootfspart}/opt/ota/zip/
-	mkdir -p ${mountdir_prefix}${rootfspart}/opt/ota/firmwares/
-
-	echo "Copying scripts required for the OTA"
-	cp firmware/scripts/get_and_verify_firmware.sh ${mountdir_prefix}${rootfspart}/opt/ota/
-	cp firmware/scripts/ota_update.sh ${mountdir_prefix}${rootfspart}/opt/ota/
 
 	echo "Creating directory needed for the Camera Image capture"
 	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/camera/

@@ -2,11 +2,11 @@ diff --git a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts b/ar
 index 607da97e7101..0d7998f926da 100644
 --- a/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
 +++ b/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
-@@ -19,4 +19,76 @@
+@@ -19,3 +19,75 @@
  / {
         model = "Variscite VAR-SOM-6UL with i.MX6ULL, eMMC, WiFi & WM8904 support on Concerto-Board";
         compatible = "variscite,imx6ul-var-som", "fsl,imx6ull";
-+       
++
 +    /* MPC changes*/
 +    /delete-node/ pinctrl_gpio_leds;
 +    /delete-node/ leds;

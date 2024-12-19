@@ -21,6 +21,7 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c deploy
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c bootloader
 COPY patches .
 RUN git apply *.patch --directory /workdir/src/kernel/ --unsafe-paths
+RUN cp imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders

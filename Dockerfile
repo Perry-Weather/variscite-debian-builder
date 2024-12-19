@@ -19,10 +19,12 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c deploy
 # WORKDIR /workdir/debian_imx6ul-var-dart/src/kernel
 # RUN git apply /workdir/os_patches/kernel/*.patch
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c bootloader
+COPY patches .
+RUN git apply *.patch --directory /workdir/src/
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
-COPY patches . # TODO move this to before Kernel, since all patches affect the kernel build
+
 # This step takes a long time. We should avoid making changes to things above this line 
 RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 

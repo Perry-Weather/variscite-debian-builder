@@ -1,0 +1,27 @@
+rom 1145ff32370c1ca4038ec7202bd18ac99d5dca38 Mon Sep 17 00:00:00 2001
+From: keyur-mpc <keyur@mpconsultants.org>
+Date: Tue, 1 Aug 2023 15:41:04 +0000
+Subject: [PATCH 02/14] Added PPP config in kernel config file :
+ imx_v7_var_defconfig
+
+---
+ arch/arm/configs/imx_v7_var_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/imx_v7_var_defconfig b/arch/arm/configs/imx_v7_var_defconfig
+index e6f0d8d53a19..b07916327673 100644
+--- a/arch/arm/configs/imx_v7_var_defconfig
++++ b/arch/arm/configs/imx_v7_var_defconfig
+@@ -226,6 +226,8 @@ CONFIG_VETH=m
+ CONFIG_AT803X_PHY=y
+ CONFIG_MICREL_PHY=y
+ CONFIG_SMSC_PHY=y
++CONFIG_PPP=m
++CONFIG_PPP_ASYNC=m
+ CONFIG_USB_PEGASUS=m
+ CONFIG_USB_RTL8150=m
+ CONFIG_USB_RTL8152=m
+-- 
+2.25.1
+
+

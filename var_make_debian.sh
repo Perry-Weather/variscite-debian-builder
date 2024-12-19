@@ -269,7 +269,7 @@ function pr_debug() {
 function get_git_src()
 {
 	# clone src code
-	git clone ${1} -b ${2} ${3} --depth=1
+	git clone ${1} -b ${2} ${3}
 	cd ${3}
 	git reset --hard ${4}
 	cd -
@@ -1081,14 +1081,6 @@ function cmd_make_rootfs()
 	# make bcm firmwares
 	if [ ! -z "${G_BCM_FW_GIT}" ]; then
 		make_bcm_fw ${G_BCM_FW_SRC_DIR} ${G_ROOTFS_DIR}
-	fi
-	
-	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
-	   [ "${MACHINE}" = "var-som-mx7" ]; then
-		# make debian x11 backend rootfs
-		cd ${G_ROOTFS_DIR}
-		make_debian_x11_rootfs ${G_ROOTFS_DIR}
-		cd -
 	fi
 }
 

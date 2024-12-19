@@ -1082,7 +1082,18 @@ function cmd_make_rootfs()
 	if [ ! -z "${G_BCM_FW_GIT}" ]; then
 		make_bcm_fw ${G_BCM_FW_SRC_DIR} ${G_ROOTFS_DIR}
 	fi
+	
+	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
+	   [ "${MACHINE}" = "var-som-mx7" ]; then
+		# make debian x11 backend rootfs
+		cd ${G_ROOTFS_DIR}
+		make_debian_x11_rootfs ${G_ROOTFS_DIR}
+		cd -
+	fi
+}
 
+function cmd_make_pack_rootfs()
+{
 	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
 	   [ "${MACHINE}" = "var-som-mx7" ]; then
 		# pack to ubi
@@ -1091,14 +1102,6 @@ function cmd_make_rootfs()
 		# pack console rootfs
 		make_tarball ${UBIFS_ROOTFS_DIR} ${G_CONSOLE_ROOTFS_TARBALL_PATH}
 		rm -rf ${UBIFS_ROOTFS_DIR}
-	fi
-
-	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
-	   [ "${MACHINE}" = "var-som-mx7" ]; then
-		# make debian x11 backend rootfs
-		cd ${G_ROOTFS_DIR}
-		make_debian_x11_rootfs ${G_ROOTFS_DIR}
-		cd -
 	fi
 
 	# pack full rootfs
@@ -1212,6 +1215,9 @@ case $PARAM_CMD in
 		;;
 	rootfs )
 		cmd_make_rootfs
+		;;
+	packrootfs )
+		cmd_make_pack_rootfs
 		;;
 	bootloader )
 		cmd_make_uboot

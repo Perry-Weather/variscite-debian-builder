@@ -25,3 +25,5 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
 # set G_USER_PACKAGES to install the poco libs and mosquitto
 COPY patches . 
 RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
+# We can modify the contents of the rootfs at this point before its actually written to an image
+RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

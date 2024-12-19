@@ -269,7 +269,7 @@ function pr_debug() {
 function get_git_src()
 {
 	# clone src code
-	git clone ${1} -b ${2} ${3}
+	git clone ${1} -b ${2} ${3} --depth=1
 	cd ${3}
 	git reset --hard ${4}
 	cd -

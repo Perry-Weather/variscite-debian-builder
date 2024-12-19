@@ -40,7 +40,7 @@ COPY firmware/scripts/cellular/cellular_connection.service /workdir/rootfs/lib/s
 COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/
 
-COPY /java-server /workdir/rootfs/usr/bin/
+COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/
 COPY firmware/resources/ /workdir/rootfs/opt/webserver/
 

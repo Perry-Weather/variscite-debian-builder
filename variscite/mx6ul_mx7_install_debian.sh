@@ -304,40 +304,37 @@ install_rootfs_to_emmc()
 
 	# PW
 	echo "Copying init service and script"
-	cp /opt/java-server/scripts/java_init.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
+	cp firmware/scripts/java_init.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
 	ln -s /lib/systemd/system/java_init.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/java_init.service
-	cp /opt/java-server/scripts/java_init.sh ${mountdir_prefix}${rootfspart}/usr/bin/
+	cp firmware/scripts/java_init.sh ${mountdir_prefix}${rootfspart}/usr/bin/
 
 	echo "Copying PPP service and script"
-	cp /opt/java-server/scripts/ppp/java_pppd.sh ${mountdir_prefix}${rootfspart}/usr/bin/
-	cp /opt/java-server/scripts/ppp/ppp@.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
+	cp firmware/scripts/ppp/java_pppd.sh ${mountdir_prefix}${rootfspart}/usr/bin/
+	cp firmware/scripts/ppp/ppp@.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
 	ln -s /lib/systemd/system/ppp@.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/ppp@quectelppp.service
-	cp /opt/java-server/scripts/ppp/quectelppp ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
-	cp /opt/java-server/scripts/ppp/quectel-chat-connect ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
-	cp /opt/java-server/scripts/ppp/quectel-chat-disconnect ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
+	cp firmware/scripts/ppp/quectelppp ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
+	cp firmware/scripts/ppp/quectel-chat-connect ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
+	cp firmware/scripts/ppp/quectel-chat-disconnect ${mountdir_prefix}${rootfspart}/etc/ppp/peers/
 
-	# TODO ZACH, you get the idea
 	echo "Copying Cellular Connection and scripts"
-	cp /opt/java-server/scripts/cellular/java_cellular.sh ${mountdir_prefix}${rootfspart}/usr/bin/
-	cp /opt/java-server/scripts/cellular/quectel-CM ${mountdir_prefix}${rootfspart}/usr/bin/
-	cp /opt/java-server/scripts/cellular/cellular_connection.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
+	cp firmware/scripts/cellular/java_cellular.sh ${mountdir_prefix}${rootfspart}/usr/bin/
+	cp firmware/scripts/cellular/quectel-CM ${mountdir_prefix}${rootfspart}/usr/bin/
+	cp firmware/scripts/cellular/cellular_connection.service ${mountdir_prefix}${rootfspart}/lib/systemd/system/
 	ln -s /lib/systemd/system/cellular_connection.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
 	echo "Copying the udhcp server configuration file"
-	cp /opt/java-server/scripts/udhcpd ${mountdir_prefix}${rootfspart}/etc/default/
-	cp /opt/java-server/scripts/udhcpd.conf ${mountdir_prefix}${rootfspart}/etc/
+	cp firmware/scripts/udhcpd ${mountdir_prefix}${rootfspart}/etc/default/
+	cp firmware/scripts/udhcpd.conf ${mountdir_prefix}${rootfspart}/etc/
 
-	# TODO ZACH we should bundle the shippable things from JavaBoardFirmware and extract them here
-	# Or pull and compile, as needed, etc
 	echo "Copying java-server application and resource required for it"
 	cp /java-server ${mountdir_prefix}${rootfspart}/usr/bin/
 	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/
-	cp -r /opt/java-server/resources/ ${mountdir_prefix}${rootfspart}/opt/webserver/
+	cp -r firmware/resources/ ${mountdir_prefix}${rootfspart}/opt/webserver/
 
 	echo "Copying updated logrotate script"
-	cp /opt/java-server/scripts/logrotate/rsyslog ${mountdir_prefix}${rootfspart}/etc/logrotate.d/rsyslog
-	cp /opt/java-server/scripts/logrotate/logrotate.timer ${mountdir_prefix}${rootfspart}/lib/systemd/system/logrotate.timer
-	cp /opt/java-server/scripts/logrotate/logrotate ${mountdir_prefix}${rootfspart}/etc/cron.hourly/logrotate
+	cp firmware/scripts/logrotate/rsyslog ${mountdir_prefix}${rootfspart}/etc/logrotate.d/rsyslog
+	cp firmware/scripts/logrotate/logrotate.timer ${mountdir_prefix}${rootfspart}/lib/systemd/system/logrotate.timer
+	cp firmware/scripts/logrotate/logrotate ${mountdir_prefix}${rootfspart}/etc/cron.hourly/logrotate
 	rm ${mountdir_prefix}${rootfspart}/etc/cron.daily/logrotate
 
 	echo "Creating the directory needed for the logs"
@@ -348,10 +345,9 @@ install_rootfs_to_emmc()
 	mkdir -p ${mountdir_prefix}${rootfspart}/opt/ota/zip/
 	mkdir -p ${mountdir_prefix}${rootfspart}/opt/ota/firmwares/
 
-	# TODO zach more stuff from the JavaBoardFirmware Repo
 	echo "Copying scripts required for the OTA"
-	cp /opt/java-server/scripts/get_and_verify_firmware.sh ${mountdir_prefix}${rootfspart}/opt/ota/
-	cp /opt/java-server/scripts/ota_update.sh ${mountdir_prefix}${rootfspart}/opt/ota/
+	cp firmware/scripts/get_and_verify_firmware.sh ${mountdir_prefix}${rootfspart}/opt/ota/
+	cp firmware/scripts/ota_update.sh ${mountdir_prefix}${rootfspart}/opt/ota/
 
 	echo "Creating directory needed for the Camera Image capture"
 	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/camera/

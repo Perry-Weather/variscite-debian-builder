@@ -20,7 +20,7 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c deploy
 # RUN git apply /workdir/os_patches/kernel/*.patch
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c bootloader
 COPY patches .
-RUN git apply *.patch --directory /workdir/src/
+RUN git apply *.patch --directory /workdir/src/kernel/
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders

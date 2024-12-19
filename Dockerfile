@@ -23,7 +23,8 @@ COPY patches .
 WORKDIR /workdir/src/kernel
 RUN git apply ../../*.patch
 WORKDIR /workdir
-RUN cp patches/imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
+# TODO make this a patch
+RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
@@ -65,3 +66,4 @@ COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs
+# Now you can grab the images from this 

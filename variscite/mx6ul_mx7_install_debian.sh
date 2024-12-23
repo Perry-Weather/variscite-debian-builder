@@ -283,6 +283,7 @@ install_kernel_to_emmc()
 	cd ${IMGS_PATH}
 	cp -v ${KERNEL_DTBS}	${mountdir_prefix}${bootpart}
 	cp -v ${KERNEL_IMAGE}	${mountdir_prefix}${bootpart}
+	echo "kernelargs=net.ifnames=0" > ${mountdir_prefix}${bootpart}/uEnv.txt
 	cd - >/dev/null
 	sync
 	umount ${node}${part}${bootpart}
@@ -300,6 +301,16 @@ install_rootfs_to_emmc()
 	echo
 
 	set_fw_utils_to_emmc_on_emmc
+
+	# PW
+	echo "Linking init service"
+	ln -s /lib/systemd/system/java_init.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/java_init.service
+
+	echo "Linking Cellular Connection"
+	ln -s /lib/systemd/system/cellular_connection.service ${mountdir_prefix}${rootfspart}/etc/systemd/system/multi-user.target.wants/cellular_connection.service
+
+	echo "Creating directory needed for the Camera Image capture"
+	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/camera/
 
 	echo
 	sync

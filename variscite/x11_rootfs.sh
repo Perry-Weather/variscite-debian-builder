@@ -311,6 +311,15 @@ EOF
 	copy_debian_images
 	copy_scripts
 
+	# PW
+	echo "Copying PW repo"
+	cp -r ${G_PW_PATH}/java-server/ ${P2_MOUNT_DIR}/
+
+	echo "Copying the service to flash the emmc on boot"
+	cp -r  ${G_PW_PATH}/java-server/scripts/java_init.service ${P2_MOUNT_DIR}/lib/systemd/system/
+	ln -s  /lib/systemd/system/java_init.service ${P2_MOUNT_DIR}/etc/systemd/system/multi-user.target.wants/java_init.service
+	cp -r  ${G_PW_PATH}/java-server/scripts/java_init.sh ${P2_MOUNT_DIR}/usr/bin/
+
 	pr_info "Sync sdcard..."
 	sync
 	umount ${P1_MOUNT_DIR}

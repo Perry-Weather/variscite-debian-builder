@@ -134,7 +134,7 @@ rm -f cleanup
 # $1 -- block device
 # $2 -- output images dir
 function make_x11_sdcard() {
-	readonly local LPARAM_BLOCK_DEVICE="$/dev/${1}"
+	readonly local LPARAM_BLOCK_DEVICE="/dev/${1}"
 	readonly local LPARAM_OUTPUT_DIR=${2}
 	local LOGICAL_DEVICE=${1}
 	readonly local P1_MOUNT_DIR="${G_TMP_DIR}/p1"

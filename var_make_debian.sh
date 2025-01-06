@@ -219,7 +219,7 @@ echo "U-Boot config:      ${G_UBOOT_DEF_CONFIG_MMC}"
 echo "Kernel config:      ${G_LINUX_KERNEL_DEF_CONFIG}"
 echo "Default kernel dtb: ${DEFAULT_BOOT_DTB}"
 echo "kernel dtbs:        ${G_LINUX_DTB}"
-secho "============================================="
+echo "============================================="
 echo
 
 ## declarate dynamic variables ##

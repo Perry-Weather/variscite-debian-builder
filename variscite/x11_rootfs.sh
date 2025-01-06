@@ -174,6 +174,8 @@ function make_x11_sdcard() {
 
 	function format_sdcard
 	{
+		pr_info "Updating partition table (for Docker)"
+		kpartx -u ${LPARAM_BLOCK_DEVICE}
 		pr_info "Formating SDCARD partitions"
 		mkfs.vfat ${LOGICAL_DEVICE}${part}1 -n BOOT-VARSOM
 		mkfs.ext4 ${LOGICAL_DEVICE}${part}2 -L rootfs

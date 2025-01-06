@@ -181,9 +181,7 @@ while true; do
 			;;
 		-d|--dev ) # SD card block device
 			shift
-			[ -e ${1} ] && {
-				PARAM_BLOCK_DEVICE=${1};
-			};
+			PARAM_BLOCK_DEVICE=${1};
 			;;
 		--debug ) # enable debug
 			PARAM_DEBUG=1;
@@ -221,7 +219,7 @@ echo "U-Boot config:      ${G_UBOOT_DEF_CONFIG_MMC}"
 echo "Kernel config:      ${G_LINUX_KERNEL_DEF_CONFIG}"
 echo "Default kernel dtb: ${DEFAULT_BOOT_DTB}"
 echo "kernel dtbs:        ${G_LINUX_DTB}"
-echo "============================================="
+secho "============================================="
 echo
 
 ## declarate dynamic variables ##

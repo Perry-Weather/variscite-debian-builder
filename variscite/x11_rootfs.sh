@@ -154,7 +154,7 @@ function make_x11_sdcard() {
 	if [ `echo ${LPARAM_BLOCK_DEVICE} | grep -c mmcblk` -ne 0 ] \
 		   || [[ ${LPARAM_BLOCK_DEVICE} == *"loop"* ]] ; then
 		# In more recent versions of Ubuntu, we cannot see logic partitions on loopback devices
-		LOGICAL_DEVICE="/dev/mapping/${LOGICAL_DEVICE}"
+		LOGICAL_DEVICE="/dev/mapper/${LOGICAL_DEVICE}"
 		part="p"
 	else
 		LOGICAL_DEVICE="/dev/${LOGICAL_DEVICE}"

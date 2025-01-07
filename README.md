@@ -16,4 +16,33 @@ If the layer cache is populated and nothing has changed in the earlier steps, th
 
 # Getting the built images
 
-The images are in the `output` directory in the image. Once some more testing is complete, there will be steps in the bash script updated to actually write to a physical SD card or other iso file.
+The docker image contains the disk image in several parts, and it needs mounted and copied to a singular, logical image. This can be done, in theory, in the dockerfile, but there are issues with device partition tables in Docker, so for now this is a manual process.
+
+```bash
+## Start a session with the builder image, mounting a system directory as a volume.
+docker run --privileged -it -e HOST_USER_ID=1000 -e HOST_USER_GID=1000 -v $(pwd):/source pweathercontainerregister.azurecr.io/jboard/variscite-debian:v20.04-test
+```
+
+Now, in the shell of the running container, write an empty image file on your host volume:
+
+```bash
+cd /source
+dd if=/dev/zero of=imx6ul-var-dart-debian-sd.img bs=1M count=3720
+sudo -S losetup -Pf imx6ul-var-dart-debian-sd.img
+## The sudo password is ubuntu
+```
+
+Then, identify the loopback device attached to your volume (probably loop0)
+
+```bash
+sudo losetup -a | grep imx6ul-var-dart-debian-sd.img
+```
+
+Execute the sdcard action:
+
+```bash
+sudo MACHINE=imx6ul-var-dart ./var_make_debian.sh -c sdcard -d loop0
+sudo losetup -d /dev/loop0
+```
+
+This will probably take 2-3 minutes. It may fail to unmount the partitions -- this is fine. Our image should still be written. You can exit the container shell. You should have a complete image on your host machine that can be dd'd to an sdcard.

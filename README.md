@@ -41,7 +41,7 @@ sudo losetup -a | grep imx6ul-var-dart-debian-sd.img
 Execute the sdcard action:
 
 ```bash
-sudo MACHINE=imx6ul-var-dart ./var_make_debian.sh -c sdcard -d loop0
+sudo MACHINE=imx6ul-var-dart /workdir/var_make_debian.sh -c sdcard -d loop0
 sudo losetup -d /dev/loop0
 ```
 

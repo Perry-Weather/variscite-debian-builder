@@ -310,8 +310,8 @@ EOF
 	mkdir -p ${P2_MOUNT_DIR}
 	sync
 
-	mount ${LPARAM_BLOCK_DEVICE}${part}1  ${P1_MOUNT_DIR}
-	mount ${LPARAM_BLOCK_DEVICE}${part}2  ${P2_MOUNT_DIR}
+	mount ${LOGICAL_DEVICE}${part}1  ${P1_MOUNT_DIR}
+	mount ${LOGICAL_DEVICE}${part}2  ${P2_MOUNT_DIR}
 	sleep 2; sync;
 
 	flash_sdcard

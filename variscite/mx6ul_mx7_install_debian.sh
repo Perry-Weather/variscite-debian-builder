@@ -253,7 +253,6 @@ install_bootloader_to_emmc()
 {
 	echo
 	echo "Installing booloader"
-
 	dd if=${IMGS_PATH}/${SPL_IMAGE} of=${node} bs=1K seek=1; sync
 	dd if=${IMGS_PATH}/${UBOOT_IMAGE} of=${node} bs=1K seek=69; sync
 
@@ -283,7 +282,7 @@ install_kernel_to_emmc()
 	cd ${IMGS_PATH}
 	cp -v ${KERNEL_DTBS}	${mountdir_prefix}${bootpart}
 	cp -v ${KERNEL_IMAGE}	${mountdir_prefix}${bootpart}
-	echo "kernelargs=net.ifnames=0" > ${mountdir_prefix}${bootpart}/uEnv.txt
+	echo "kernelargs=net.ifnames=0" >> ${mountdir_prefix}${bootpart}/uEnv.txt
 	cd - >/dev/null
 	sync
 	umount ${node}${part}${bootpart}

@@ -58,7 +58,7 @@ COPY firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/syst
 COPY firmware/scripts/logrotate/logrotate /workdir/rootfs/etc/cron.hourly/logrotate
 RUN rm /workdir/rootfs/etc/cron.daily/logrotate
 
-COPY /opt/java-server/scripts/mqtt/ /workdir/rootfs/opt/mqtt
+COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
 
 RUN mkdir -p /workdir/rootfs/opt/webserver/logs/
 

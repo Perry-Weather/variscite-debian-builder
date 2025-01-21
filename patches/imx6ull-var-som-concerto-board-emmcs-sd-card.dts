@@ -1,0 +1,282 @@
+/*
+ * Copyright (C) 2019 Variscite Ltd. - https://www.variscite.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/dts-v1/;
+
+#include "imx6ull.dtsi"
+
+#include "imx6ull-var-som.dtsi"
+#include "imx6ul-imx6ull-var-som-emmc.dtsi"
+#include "imx6ul-imx6ull-var-som-wifi.dtsi"
+
+#include "imx6ull-var-som-concerto-board.dtsi"
+
+/ {
+        model = "Variscite VAR-SOM-6UL with i.MX6ULL, eMMC & WiFi support on Concerto-Board";
+        compatible = "variscite,imx6ul-var-som", "fsl,imx6ull";
+
+    /* MPC changes*/
+    /delete-node/ pinctrl_gpio_leds;
+    /delete-node/ leds;
+
+    /delete-node/ pinctrl_lcdif_ctrl;
+    /delete-node/ pinctrl_lcdif_dat;
+    /delete-node/ lcdif;
+
+    /delete-node/ pinctrl_i2c1;
+    /delete-node/ i2c1;
+
+    /delete-node/ pinctrl_flexcan1;
+    /delete-node/ can1;
+
+    /delete-node/ usbotg1idgrp;
+    /delete-node/ usbotg1;
+
+    /delete-node/ pinctrl_pwm4;
+    /delete-node/ pwm4;
+
+    /delete-node/ pinctrl_tsc;
+    /delete-node/ tsc;
+
+    /delete-node/ backlight;
+
+    /delete-node/ pinctrl_gpio_keys;
+    /delete-node/ pinctrl_gpio_keys_snvs;
+    /delete-node/ back;
+    /delete-node/ wakeup;
+    /delete-node/ keys;
+
+    run-control {
+        compatible = "gpio-leds";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_java_gpio>, <&pinctrl_java_gpio_snvs>;
+                status = "okay";
+        ds18b20_ls {
+            gpios = <&gpio3 9 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        solar_ls {
+            gpios = <&gpio3 22 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        bg95_ls {
+            gpios = <&gpio3 8 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        weather_ls {
+            gpios = <&gpio3 17 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        eth_ls {
+            gpios = <&gpio3 25 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        aqi_ls {
+            gpios = <&gpio3 18 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        batt_ls {
+            gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        bg95_rst {
+            gpios = <&gpio5 9 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        camera_ls {
+            gpios = <&gpio3 7 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        boost1_en {
+            gpios = <&gpio5 7 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        boost2_en {
+            gpios = <&gpio5 3 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        strobe_in {
+            gpios = <&gpio4 23 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        led_r {
+            gpios = <&gpio3 6 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        led_g {
+            gpios = <&gpio3 5 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+        led_b {
+            gpios = <&gpio4 14 GPIO_ACTIVE_HIGH>;
+            default-state = "off";
+        };
+    };
+
+    extra-gpios {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_java_extra_gpio>;
+                status = "okay";
+    };
+
+    onewire {
+        compatible = "w1-gpio";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_w1>;
+        gpios = <&gpio1 28 GPIO_ACTIVE_HIGH>;
+    };
+
+};
+
+/* MPC changes*/
+&can1 {
+        status = "disabled";
+};
+
+&usbotg1 {
+        status = "disabled";
+};
+
+&i2c1 {
+        status = "disabled";
+};
+
+&iomuxc {
+    pinctrl_uart3: uart3grp {
+        fsl,pins = <
+            MX6UL_PAD_UART3_TX_DATA__UART3_DCE_TX       0x1b0b1
+            MX6UL_PAD_UART3_RX_DATA__UART3_DCE_RX       0x1b0b1
+            // MX6UL_PAD_UART3_CTS_B__GPIO1_IO26        0x1b0b1
+            MX6UL_PAD_UART3_RTS_B__GPIO1_IO27       0x130b1
+        >;
+    };
+
+    pinctrl_uart6: uart6grp {
+        fsl,pins = <
+            MX6UL_PAD_CSI_MCLK__UART6_DCE_TX    0x1b0b1
+            MX6UL_PAD_CSI_PIXCLK__UART6_DCE_RX  0x1b0b1
+            // MX6UL_PAD_NAND_CE1_B__GPIO4_IO14 0x1b0b1
+            MX6UL_PAD_UART5_TX_DATA__GPIO1_IO30 0x130b1
+        >;
+    };
+
+    pinctrl_adc1: adc1grp {
+                fsl,pins = <
+                        MX6UL_PAD_GPIO1_IO01__GPIO1_IO01 0xb0
+            MX6UL_PAD_GPIO1_IO04__GPIO1_IO04 0xb0
+                >;
+        };
+
+    pinctrl_java_gpio: javagpiogrp {
+                fsl,pins = <
+                        MX6UL_PAD_LCD_DATA04__GPIO3_IO09 0x1b0b0
+                        MX6UL_PAD_LCD_DATA17__GPIO3_IO22 0x1b0b0
+                        MX6UL_PAD_LCD_DATA03__GPIO3_IO08 0x1b0b0
+                        MX6UL_PAD_LCD_DATA12__GPIO3_IO17 0x1b0b0
+                        MX6UL_PAD_LCD_DATA20__GPIO3_IO25 0x1b0b0
+                        MX6UL_PAD_LCD_DATA13__GPIO3_IO18 0x1b0b0
+                        MX6UL_PAD_GPIO1_IO02__GPIO1_IO02 0x1b0b0
+                        MX6UL_PAD_LCD_DATA02__GPIO3_IO07 0x1b0b0
+                        MX6UL_PAD_CSI_DATA02__GPIO4_IO23 0x1b0b0
+            MX6UL_PAD_LCD_DATA01__GPIO3_IO06 0x1b0b0
+            MX6UL_PAD_LCD_DATA00__GPIO3_IO05 0x1b0b0
+            MX6UL_PAD_NAND_CE1_B__GPIO4_IO14 0x1b0b0
+                >;
+        };
+
+    pinctrl_java_extra_gpio: javaextragpiogrp {
+                fsl,pins = <
+                        MX6UL_PAD_GPIO1_IO05__GPIO1_IO05 0x1b0b0
+            MX6UL_PAD_CSI_DATA06__GPIO4_IO27 0x1b0b0
+            MX6UL_PAD_CSI_DATA04__GPIO4_IO25 0x1b0b0
+            MX6UL_PAD_CSI_DATA05__GPIO4_IO26 0x1b0b0
+            MX6UL_PAD_CSI_DATA07__GPIO4_IO28 0x1b0b0
+                >;
+        };
+
+    pinctrl_java_enet2_gpio: javaenet2_gpiogrp {
+        fsl,pins = <
+            MX6UL_PAD_UART5_RX_DATA__GPIO1_IO31 0x1b0b0 /* fec2 reset */
+        >;
+    };
+
+    pinctrl_w1: w1grp {
+        fsl,pins = <
+            MX6UL_PAD_UART4_TX_DATA__GPIO1_IO28   0x0c0b0
+       >;
+    };
+
+};
+
+/* SVNS pad needs to be configured in iomuxc_snvs */
+&iomuxc_snvs {
+   pinctrl_java_gpio_snvs: javagpiogrpsnvs {
+                fsl,pins = <
+                        MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09 0x1b0b0
+                        MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07 0x1b0b0
+                        MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03 0x1b0b0
+                >;
+        };
+};
+
+/* Updated phy enet-rst gpio is GPIO_1_31 */
+&fec2 {
+        pinctrl-0 = <&pinctrl_enet2>, <&pinctrl_java_enet2_gpio>, <&pinctrl_enet2_mdio>;
+        phy-reset-gpios=<&gpio1 31 GPIO_ACTIVE_LOW>;
+};
+
+/* wdog to avoid confclicts with ADC Pin */
+&wdog1 {
+    /delete-property/ pinctrl-names;
+    /delete-property/ pinctrl-0;
+    /delete-property/ fsl,ext-reset-output;
+};
+
+/* ttymxc2 UART */
+&uart3 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_uart3>;
+        fsl,uart-has-rtscts;
+        linux,rs485-enabled-at-boot-time;
+        rs485-rts-active-high;
+        status = "okay";
+};
+
+/* ttymxc5 UART */
+&uart6 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_uart6>;
+        fsl,uart-has-rtscts;
+        linux,rs485-enabled-at-boot-time;
+        rs485-rts-active-high;
+        status = "okay";
+};
+
+/* Condifgured ADC on GPIO1_IO1 */
+&adc1 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_adc1>;
+        vref-supply = <&touch_3v3_regulator>;
+        num-channels = <10>;
+        status = "okay";
+};
+
+/* Disabled to avoid conflicts with GPIO3_IO07, GPIO3_IO09, GPIO3_IO08, GPIO3_IO17, GPIO3_IO25, GPIO3_IO18 */
+&lcdif {
+    status = "disabled";
+};
+
+/* Disabled to avoid conflicts with GPIO1_IO05 */
+&pwm4 {
+    status = "disabled";
+};
+
+/* Disabling this node to avoid conflict with GPIO1_IO04 for GPIO1_IO04 and GPIO1_IO02 pin */
+&tsc {
+    status = "disabled";
+};

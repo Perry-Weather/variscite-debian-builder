@@ -14,13 +14,15 @@ Again, this is not a true containerized build process, and we need the ability t
 
 If the layer cache is populated and nothing has changed in the earlier steps, this should only run `packrootfs` and not earlier steps, which should take about 5 minutes.
 
+After building, grab the hash from the completed image. You'll need that in the next step.
+
 # Getting the built images
 
 The docker image contains the disk image in several parts, and it needs mounted and copied to a singular, logical image. This can be done, in theory, in the dockerfile, but there are issues with device partition tables in Docker, so for now this is a manual process.
 
 ```bash
 ## Start a session with the builder image, mounting a system directory as a volume.
-docker run --privileged -it -e HOST_USER_ID=1000 -e HOST_USER_GID=1000 -v $(pwd):/source pweathercontainerregister.azurecr.io/jboard/variscite-debian:v20.04-test
+docker run --privileged -it -e HOST_USER_ID=1000 -e HOST_USER_GID=1000 -v $(pwd):/source [:hash]
 ```
 
 Now, in the shell of the running container, write an empty image file on your host volume:
@@ -46,3 +48,11 @@ sudo losetup -d /dev/loop0
 ```
 
 This will probably take 2-3 minutes. It may fail to unmount the partitions -- this is fine. Our image should still be written. You can exit the container shell. You should have a complete image on your host machine that can be dd'd to an sdcard.
+
+Now we just need to compress the image so we can copy it to a local computer with an sd card.
+
+```
+gzip -9 imx6ul-var-dart-debian-sd.img
+```
+
+Lastly, just scp that file to your mac and write the SD Card

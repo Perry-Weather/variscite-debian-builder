@@ -27,7 +27,7 @@ RUN git apply ../../0007*.patch -v
 RUN git apply ../../0011*.patch -v
 RUN git apply ../../0013*.patch -v
 WORKDIR /workdir
-RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
+RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card-wm8731.dts
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
@@ -41,10 +41,12 @@ RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 
 COPY firmware/scripts/java_init.service /workdir/rootfs/lib/systemd/system/
 COPY firmware/scripts/java_init.sh /workdir/rootfs/usr/bin/
+RUN ln -s /lib/systemd/system/java_init.service /etc/systemd/system/multi-user.target.wants/java_init.service
 
 COPY firmware/scripts/cellular/java_cellular.sh /workdir/rootfs/usr/bin/
 COPY firmware/scripts/cellular/quectel-CM /workdir/rootfs/usr/bin/
 COPY firmware/scripts/cellular/cellular_connection.service /workdir/rootfs/lib/systemd/system/
+RUN ln -s /lib/systemd/system/cellular_connection.service /etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
 COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/

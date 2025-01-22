@@ -475,15 +475,7 @@ if [[ $STORAGE_DEV == "nand" ]] ; then
 	SPL_IMAGE=SPL.nand
 	UBOOT_IMAGE=u-boot.img.nand
 
-	if [[ $BOARD == *6ul* ]] ; then
-		if [[ -n $CODEC && $CODEC == "wm8731" ]]; then
-			KERNEL_DTB="${soc}-${som}-${carrier}-${STORAGE_DEV}-${mx6ul_mmc0_dev}-${CODEC}.dtb"
-		else
-			KERNEL_DTB="${soc}-${som}-${carrier}-${STORAGE_DEV}-${mx6ul_mmc0_dev}.dtb"
-		fi
-	elif [[ $BOARD == "mx7" ]] ; then
-		KERNEL_DTB="imx7d-var-som-nand${VARSOMMX7_VARIANT}.dtb"
-	fi
+	KERNEL_DTB="${soc}-${som}-${carrier}-${STORAGE_DEV}-${mx6ul_mmc0_dev}.dtb"
 
 	printf "Installing Device Tree file: "
 	echo $KERNEL_DTB

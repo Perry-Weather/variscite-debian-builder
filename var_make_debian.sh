@@ -1094,6 +1094,14 @@ function cmd_make_pack_rootfs()
 		rm -rf ${UBIFS_ROOTFS_DIR}
 	fi
 
+	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
+	   [ "${MACHINE}" = "var-som-mx7" ]; then
+		# make debian x11 backend rootfs
+		cd ${G_ROOTFS_DIR}
+		make_debian_x11_rootfs ${G_ROOTFS_DIR}
+		cd -
+	fi
+
 	# pack full rootfs
 	make_tarball ${G_ROOTFS_DIR} ${G_ROOTFS_TARBALL_PATH}
 }

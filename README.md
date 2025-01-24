@@ -6,11 +6,15 @@ This is not a perfectly contained docker image. The host system must be Linux x8
 
 Then, you will need to have the firmware (closed source) project in a folder somewhere on your system, by default, `../JavaBoardFirmware`
 
+Run `make clean` and `make firmware` to copy over the firmware into the appropriate folders. If you want to build an image with a version other than `main`, then use `make firmware BRANCH=feature`
+
 # Building the Docker Image
+
+*Only do this after you've run `make firmware` from the previous steps.*
 
 `BUILDX_EXPERIMENTAL=1 DOCKER_BUILDKIT=1 docker buildx build --progress=plain --allow security.insecure .`
 
-Again, this is not a true containerized build process, and we need the ability to mount host resources inside the container for building.
+This is not a true containerized build process, and we need the ability to mount host resources inside the container for building, thus the need for insecure build.
 
 If the layer cache is populated and nothing has changed in the earlier steps, this should only run `packrootfs` and not earlier steps, which should take about 5 minutes.
 

@@ -54,8 +54,8 @@ COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/
 
 COPY firmware/java-server /workdir/rootfs/usr/bin/
-RUN	mkdir -p /workdir/rootfs/opt/webserver/
-COPY firmware/resources/ /workdir/rootfs/opt/webserver/
+RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
+COPY firmware/resources/ /workdir/rootfs/opt/webserver/resources/
 
 COPY firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
 COPY firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
@@ -72,6 +72,8 @@ RUN	mkdir -p /workdir/rootfs/opt/ota/firmwares/
 
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
+RUN ln -s /lib/systemd/system/java_init.service /etc/systemd/system/multi-user.target.wants/java_init.service
+RUN ln -s /lib/systemd/system/cellular_connection.service /etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

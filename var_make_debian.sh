@@ -49,7 +49,7 @@ readonly G_CROSS_COMPILER_ARCHIVE_32BIT="${G_CROSS_COMPILER_32BIT_NAME}.tar.xz"
 readonly G_EXT_CROSS_32BIT_COMPILER_LINK="http://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/${G_CROSS_COMPILER_ARCHIVE_32BIT}"
 readonly G_CROSS_COMPILER_32BIT_PREFIX="arm-linux-gnueabihf-"
 
-readonly G_CROSS_COMPILER_JOPTION="-j 4"
+readonly G_CROSS_COMPILER_JOPTION="-j 8"
 
 #### user rootfs packages ####
 readonly G_USER_PACKAGES=" \
@@ -1092,14 +1092,6 @@ function cmd_make_pack_rootfs()
 		# pack console rootfs
 		make_tarball ${UBIFS_ROOTFS_DIR} ${G_CONSOLE_ROOTFS_TARBALL_PATH}
 		rm -rf ${UBIFS_ROOTFS_DIR}
-	fi
-
-	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
-	   [ "${MACHINE}" = "var-som-mx7" ]; then
-		# make debian x11 backend rootfs
-		cd ${G_ROOTFS_DIR}
-		make_debian_x11_rootfs ${G_ROOTFS_DIR}
-		cd -
 	fi
 
 	# pack full rootfs

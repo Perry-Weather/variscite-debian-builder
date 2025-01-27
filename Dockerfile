@@ -37,6 +37,8 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
 # This step takes a long time. We should avoid making changes to things above this line 
 RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 
+## TODO make the above steps into a separate stage or separate docker image
+
 # The below steps copy all the java-board specific files into the final image.
 # Steps after this are small and fast, and so they should complete quickly
 # Allowing us to (in most cases) iterate and build images in seconds instead of hours.
@@ -72,8 +74,6 @@ RUN	mkdir -p /workdir/rootfs/opt/ota/firmwares/
 
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
-RUN ln -s /lib/systemd/system/java_init.service /etc/systemd/system/multi-user.target.wants/java_init.service
-RUN ln -s /lib/systemd/system/cellular_connection.service /etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

@@ -45,12 +45,12 @@ RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 
 COPY firmware/scripts/java_init.service /workdir/rootfs/lib/systemd/system/
 COPY firmware/scripts/java_init.sh /workdir/rootfs/usr/bin/
-RUN ln -s /lib/systemd/system/java_init.service /etc/systemd/system/multi-user.target.wants/java_init.service
+RUN ln -s /lib/systemd/system/java_init.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/java_init.service
 
 COPY firmware/scripts/cellular/java_cellular.sh /workdir/rootfs/usr/bin/
 COPY firmware/scripts/cellular/quectel-CM /workdir/rootfs/usr/bin/
 COPY firmware/scripts/cellular/cellular_connection.service /workdir/rootfs/lib/systemd/system/
-RUN ln -s /lib/systemd/system/cellular_connection.service /etc/systemd/system/multi-user.target.wants/cellular_connection.service
+RUN ln -s /lib/systemd/system/cellular_connection.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
 COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/

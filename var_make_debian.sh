@@ -35,6 +35,7 @@ readonly G_ROOTFS_DIR="${DEF_BUILDENV}/rootfs"
 readonly G_TMP_DIR="${DEF_BUILDENV}/tmp"
 readonly G_TOOLS_PATH="${DEF_BUILDENV}/toolchain"
 readonly G_VARISCITE_PATH="${DEF_BUILDENV}/variscite"
+readonly G_PW_PATH="${DEF_BUILDENV}/PW"
 
 #64 bit CROSS_COMPILER config and paths
 readonly G_CROSS_COMPILER_64BIT_NAME="gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu"
@@ -48,10 +49,21 @@ readonly G_CROSS_COMPILER_ARCHIVE_32BIT="${G_CROSS_COMPILER_32BIT_NAME}.tar.xz"
 readonly G_EXT_CROSS_32BIT_COMPILER_LINK="http://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/${G_CROSS_COMPILER_ARCHIVE_32BIT}"
 readonly G_CROSS_COMPILER_32BIT_PREFIX="arm-linux-gnueabihf-"
 
-readonly G_CROSS_COMPILER_JOPTION="-j 4"
+readonly G_CROSS_COMPILER_JOPTION="-j 8"
 
 #### user rootfs packages ####
-readonly G_USER_PACKAGES=""
+readonly G_USER_PACKAGES=" \
+	git \
+	vim \
+	libpoco-dev \
+	ffmpeg \
+	alsa-utils \
+	mpg123 \
+	minicom \
+	iw \
+	ntpdate \
+	awscli \
+	libmosquitto-dev"
 
 export LC_ALL=C
 
@@ -169,9 +181,7 @@ while true; do
 			;;
 		-d|--dev ) # SD card block device
 			shift
-			[ -e ${1} ] && {
-				PARAM_BLOCK_DEVICE=${1};
-			};
+			PARAM_BLOCK_DEVICE=${1};
 			;;
 		--debug ) # enable debug
 			PARAM_DEBUG=1;
@@ -797,7 +807,7 @@ EOF
 	rm -f ${UBIFS_IMG}
 
 	pr_info "Creating $UBIFS_IMG image"
-	mkfs.ubifs -x zlib -m 2048  -e 124KiB -c 3965 -r ${UBIFS_ROOTFS_DIR} $UBIFS_IMG
+	mkfs.ubifs -x zlib -m 2048  -e 124KiB -c 8192 -r ${UBIFS_ROOTFS_DIR} $UBIFS_IMG
 
 	pr_info "Creating $UBI_IMG image"
 	ubinize -o ${UBI_IMG} -m 2048 -p 128KiB -s 2048 -O 2048 ${UBI_CFG}
@@ -1070,7 +1080,10 @@ function cmd_make_rootfs()
 	if [ ! -z "${G_BCM_FW_GIT}" ]; then
 		make_bcm_fw ${G_BCM_FW_SRC_DIR} ${G_ROOTFS_DIR}
 	fi
+}
 
+function cmd_make_pack_rootfs()
+{
 	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
 	   [ "${MACHINE}" = "var-som-mx7" ]; then
 		# pack to ubi
@@ -1079,14 +1092,6 @@ function cmd_make_rootfs()
 		# pack console rootfs
 		make_tarball ${UBIFS_ROOTFS_DIR} ${G_CONSOLE_ROOTFS_TARBALL_PATH}
 		rm -rf ${UBIFS_ROOTFS_DIR}
-	fi
-
-	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
-	   [ "${MACHINE}" = "var-som-mx7" ]; then
-		# make debian x11 backend rootfs
-		cd ${G_ROOTFS_DIR}
-		make_debian_x11_rootfs ${G_ROOTFS_DIR}
-		cd -
 	fi
 
 	# pack full rootfs
@@ -1200,6 +1205,9 @@ case $PARAM_CMD in
 		;;
 	rootfs )
 		cmd_make_rootfs
+		;;
+	packrootfs )
+		cmd_make_pack_rootfs
 		;;
 	bootloader )
 		cmd_make_uboot

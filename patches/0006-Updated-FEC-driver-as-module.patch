@@ -1,0 +1,47 @@
+From 6582d520359f44c454bd32f9dc09ca8951eca98f Mon Sep 17 00:00:00 2001
+From: keyur-mpc <keyur@mpconsultants.org>
+Date: Tue, 1 Aug 2023 15:45:07 +0000
+Subject: [PATCH 06/14] Updated FEC driver as module
+
+---
+ arch/arm/configs/imx_v7_var_defconfig | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/configs/imx_v7_var_defconfig b/arch/arm/configs/imx_v7_var_defconfig
+index b07916327673..59b710d283a7 100644
+--- a/arch/arm/configs/imx_v7_var_defconfig
++++ b/arch/arm/configs/imx_v7_var_defconfig
+@@ -216,6 +216,7 @@ CONFIG_VXLAN=m
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_FARADAY is not set
++CONFIG_FEC=m
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+@@ -223,6 +224,7 @@ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_NATSEMI is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
++CONFIG_PHYLIB=y
+ CONFIG_AT803X_PHY=y
+ CONFIG_MICREL_PHY=y
+ CONFIG_SMSC_PHY=y
+@@ -292,6 +294,7 @@ CONFIG_SPI_FSL_QUADSPI=y
+ CONFIG_SPI_GPIO=y
+ CONFIG_SPI_IMX=y
+ CONFIG_SPI_SPIDEV=y
++CONFIG_PTP_1588_CLOCK=y
+ CONFIG_GPIO_SYSFS=y
+ CONFIG_GPIO_SIOX=m
+ CONFIG_GPIO_IMX_RPMSG=y
+@@ -610,7 +613,6 @@ CONFIG_CRYPTO_DEV_FSL_CAAM_SM=y
+ CONFIG_CRYPTO_DEV_FSL_CAAM_SM_TEST=m
+ CONFIG_CRYPTO_DEV_SAHARA=y
+ CONFIG_CRYPTO_DEV_MXS_DCP=y
+-CONFIG_CRC_CCITT=m
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRC7=m
+ CONFIG_DMA_CMA=y
+-- 
+2.25.1

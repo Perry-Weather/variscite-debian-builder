@@ -253,7 +253,6 @@ install_bootloader_to_emmc()
 {
 	echo
 	echo "Installing booloader"
-
 	dd if=${IMGS_PATH}/${SPL_IMAGE} of=${node} bs=1K seek=1; sync
 	dd if=${IMGS_PATH}/${UBOOT_IMAGE} of=${node} bs=1K seek=69; sync
 
@@ -283,6 +282,7 @@ install_kernel_to_emmc()
 	cd ${IMGS_PATH}
 	cp -v ${KERNEL_DTBS}	${mountdir_prefix}${bootpart}
 	cp -v ${KERNEL_IMAGE}	${mountdir_prefix}${bootpart}
+	echo "kernelargs=net.ifnames=0" >> ${mountdir_prefix}${bootpart}/uEnv.txt
 	cd - >/dev/null
 	sync
 	umount ${node}${part}${bootpart}
@@ -300,6 +300,9 @@ install_rootfs_to_emmc()
 	echo
 
 	set_fw_utils_to_emmc_on_emmc
+
+	echo "Creating directory needed for the Camera Image capture"
+	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/camera/
 
 	echo
 	sync
@@ -465,15 +468,7 @@ if [[ $STORAGE_DEV == "nand" ]] ; then
 	SPL_IMAGE=SPL.nand
 	UBOOT_IMAGE=u-boot.img.nand
 
-	if [[ $BOARD == *6ul* ]] ; then
-		if [[ -n $CODEC && $CODEC == "wm8731" ]]; then
-			KERNEL_DTB="${soc}-${som}-${carrier}-${STORAGE_DEV}-${mx6ul_mmc0_dev}-${CODEC}.dtb"
-		else
-			KERNEL_DTB="${soc}-${som}-${carrier}-${STORAGE_DEV}-${mx6ul_mmc0_dev}.dtb"
-		fi
-	elif [[ $BOARD == "mx7" ]] ; then
-		KERNEL_DTB="imx7d-var-som-nand${VARSOMMX7_VARIANT}.dtb"
-	fi
+	KERNEL_DTB="${soc}-${som}-${carrier}-${STORAGE_DEV}-${mx6ul_mmc0_dev}.dtb"
 
 	printf "Installing Device Tree file: "
 	echo $KERNEL_DTB

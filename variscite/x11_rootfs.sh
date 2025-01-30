@@ -134,8 +134,9 @@ rm -f cleanup
 # $1 -- block device
 # $2 -- output images dir
 function make_x11_sdcard() {
-	readonly local LPARAM_BLOCK_DEVICE=${1}
+	readonly local LPARAM_BLOCK_DEVICE="/dev/${1}"
 	readonly local LPARAM_OUTPUT_DIR=${2}
+	local LOGICAL_DEVICE=${1}
 	readonly local P1_MOUNT_DIR="${G_TMP_DIR}/p1"
 	readonly local P2_MOUNT_DIR="${G_TMP_DIR}/p2"
 	readonly local DEBIAN_IMAGES_TO_ROOTFS_POINT="opt/images/Debian"
@@ -151,8 +152,12 @@ function make_x11_sdcard() {
 
 	local part=""
 	if [ `echo ${LPARAM_BLOCK_DEVICE} | grep -c mmcblk` -ne 0 ] \
-		|| [[ ${LPARAM_BLOCK_DEVICE} == *"loop"* ]] ; then
+		   || [[ ${LPARAM_BLOCK_DEVICE} == *"loop"* ]] ; then
+		# In more recent versions of Ubuntu, we cannot see logic partitions on loopback devices
+		LOGICAL_DEVICE="/dev/mapper/${LOGICAL_DEVICE}"
 		part="p"
+	else
+		LOGICAL_DEVICE="/dev/${LOGICAL_DEVICE}"
 	fi
 
 	# Check that we're using a valid device
@@ -169,9 +174,11 @@ function make_x11_sdcard() {
 
 	function format_sdcard
 	{
+		pr_info "Updating partition table (for Docker)"
+		kpartx -u ${LPARAM_BLOCK_DEVICE}
 		pr_info "Formating SDCARD partitions"
-		mkfs.vfat ${LPARAM_BLOCK_DEVICE}${part}1 -n BOOT-VARSOM
-		mkfs.ext4 ${LPARAM_BLOCK_DEVICE}${part}2 -L rootfs
+		mkfs.vfat ${LOGICAL_DEVICE}${part}1 -n BOOT-VARSOM
+		mkfs.ext4 ${LOGICAL_DEVICE}${part}2 -L rootfs
 	}
 
 	function flash_u-boot
@@ -280,7 +287,7 @@ p
 p
 w
 EOF
-	sleep 2; sync;
+	sleep 10; sync;
 
 	# Get total card size
 	total_size=`sfdisk -s ${LPARAM_BLOCK_DEVICE}`
@@ -303,8 +310,8 @@ EOF
 	mkdir -p ${P2_MOUNT_DIR}
 	sync
 
-	mount ${LPARAM_BLOCK_DEVICE}${part}1  ${P1_MOUNT_DIR}
-	mount ${LPARAM_BLOCK_DEVICE}${part}2  ${P2_MOUNT_DIR}
+	mount ${LOGICAL_DEVICE}${part}1  ${P1_MOUNT_DIR}
+	mount ${LOGICAL_DEVICE}${part}2  ${P2_MOUNT_DIR}
 	sleep 2; sync;
 
 	flash_sdcard

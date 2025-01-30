@@ -1,0 +1,26 @@
+From cd82a20453455e340dc25ba4f5a12903fd130730 Mon Sep 17 00:00:00 2001
+From: keyur-mpc <keyur@mpconsultants.org>
+Date: Tue, 22 Aug 2023 10:19:52 +0000
+Subject: [PATCH 11/14] Enabled One wire Thermal driver in the kernel
+
+---
+ arch/arm/configs/imx_v7_var_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm/configs/imx_v7_var_defconfig b/arch/arm/configs/imx_v7_var_defconfig
+index 59b710d283a7..31432bae83dc 100644
+--- a/arch/arm/configs/imx_v7_var_defconfig
++++ b/arch/arm/configs/imx_v7_var_defconfig
+@@ -304,6 +304,9 @@ CONFIG_GPIO_PCA953X_IRQ=y
+ CONFIG_GPIO_PCF857X=y
+ CONFIG_GPIO_STMPE=y
+ CONFIG_GPIO_74X164=y
++CONFIG_W1=y
++CONFIG_W1_MASTER_GPIO=y
++CONFIG_W1_SLAVE_THERM=y
+ CONFIG_POWER_RESET=y
+ CONFIG_POWER_RESET_SYSCON=y
+ CONFIG_POWER_RESET_SYSCON_POWEROFF=y
+-- 
+2.25.1
+

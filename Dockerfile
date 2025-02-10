@@ -59,9 +59,9 @@ COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
 COPY firmware/resources/ /workdir/rootfs/opt/webserver/resources/
 
-COPY firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
-COPY firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
-COPY firmware/scripts/logrotate/logrotate /workdir/rootfs/etc/cron.hourly/logrotate
+COPY --chmod=644 firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
+COPY --chmod=644 firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
+COPY --chmod=644 firmware/scripts/logrotate/logrotate /workdir/rootfs/etc/cron.hourly/logrotate
 RUN rm /workdir/rootfs/etc/cron.daily/logrotate
 
 COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt

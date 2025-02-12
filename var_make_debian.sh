@@ -61,6 +61,7 @@ readonly G_USER_PACKAGES=" \
 	mpg123 \
 	minicom \
 	iw \
+    p7zip-full \
 	ntpdate \
 	awscli \
 	libmosquitto-dev"

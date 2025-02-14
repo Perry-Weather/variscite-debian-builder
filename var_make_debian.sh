@@ -61,10 +61,10 @@ readonly G_USER_PACKAGES=" \
 	mpg123 \
 	minicom \
 	iw \
-    p7zip-full \
 	ntpdate \
 	awscli \
-	libmosquitto-dev"
+	libmosquitto-dev \
+	p7zip-full"
 
 export LC_ALL=C
 

@@ -78,8 +78,6 @@ RUN chroot /workdir/rootfs/ protected_install dh-python
 RUN chroot /workdir/rootfs/ protected_install apt-src
 RUN chroot /workdir/rootfs/ apt-get -y autoremove
 
-RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
-
 #update iptables alternatives to legacy
 RUN chroot /workdir/rootfs/ update-alternatives --set iptables /usr/sbin/iptables-legacy
 RUN chroot /workdir/rootfs/ update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy

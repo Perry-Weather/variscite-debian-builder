@@ -1,13 +1,13 @@
 #!/bin/bash
 
-_name=\${1}	
+_name=${1}	
 repeated_cnt=5;
 RET_CODE=1;
 
-echo Installing \${_name}
-for (( c=0; c<\${repeated_cnt}; c++ ))
+echo Installing ${_name}
+for (( c=0; c<${repeated_cnt}; c++ ))
 do
-	apt install -y \${_name} && {
+	apt install -y ${_name} && {
 		RET_CODE=0;
 		break;
 	};
@@ -25,4 +25,4 @@ do
 	};
 done
 
-exit \${RET_CODE}
+exit ${RET_CODE}

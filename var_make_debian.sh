@@ -1058,7 +1058,7 @@ function cmd_make_deploy()
 	return 0
 }
 
-function cmd_make_prep-rootfs(){
+function cmd_make_prep_rootfs(){
 	make_prepare
 	make_debian_console_prepare_rootfs ${G_ROOTFS_DIR}
 }

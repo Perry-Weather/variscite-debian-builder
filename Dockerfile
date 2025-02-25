@@ -34,7 +34,63 @@ RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
 
-# This step takes a long time. We should avoid making changes to things above this line 
+# This step takes a long time. We should avoid making changes to things above this line
+RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c prep-rootfs
+# apply debconfig options
+RUN chroot /workdir/rootfs/ debconf-set-selections /debconf.set
+RUN chroot /workdir/rootfs/ rm -f /debconf.set
+RUN chroot /workdir/rootfs/ apt-get update || apt-get upgrade
+COPY variscite/protected_install /workdir/rootfs/usr/local/bin/protected_install
+RUN chroot /workdir/rootfs/ protected_install local-apt-repository
+RUN chroot /workdir/rootfs/ apt-get update || apt-get upgrade
+RUN chroot /workdir/rootfs/ protected_install udisks2
+RUN chroot /workdir/rootfs/ protected_install locales
+RUN chroot /workdir/rootfs/ protected_install ntp
+RUN chroot /workdir/rootfs/ protected_install openssh-server
+RUN chroot /workdir/rootfs/ protected_install nfs-common
+RUN chroot /workdir/rootfs/ protected_install dosfstools
+RUN chroot /workdir/rootfs/ sed -i -e 's/#PermitRootLogin.*/PermitRootLogin\tyes/g' /etc/ssh/sshd_config
+RUN chroot /workdir/rootfs/ protected_install net-tools
+RUN chroot /workdir/rootfs/ protected_install network-manager
+RUN chroot /workdir/rootfs/ protected_install psmisc
+RUN chroot /workdir/rootfs/ protected_install alsa-utils
+RUN chroot /workdir/rootfs/ protected_install i2c-tools
+RUN chroot /workdir/rootfs/ protected_install usbutils
+RUN chroot /workdir/rootfs/ protected_install gpiod
+RUN chroot /workdir/rootfs/ protected_install libgpiod2
+RUN chroot /workdir/rootfs/ protected_install python3-libgpiod
+RUN chroot /workdir/rootfs/ protected_install iperf3
+RUN chroot /workdir/rootfs/ protected_install rng-tools
+RUN chroot /workdir/rootfs/ protected_install mtd-utils
+RUN chroot /workdir/rootfs/ protected_install bluetooth
+RUN chroot /workdir/rootfs/ protected_install bluez-obexd
+RUN chroot /workdir/rootfs/ protected_install bluez-tools
+RUN chroot /workdir/rootfs/ protected_install pulseaudio
+RUN chroot /workdir/rootfs/ protected_install pulseaudio-module-bluetooth
+RUN chroot /workdir/rootfs/ protected_install hostapd
+RUN chroot /workdir/rootfs/ protected_install udhcpd
+RUN chroot /workdir/rootfs/ systemctl disable hostapd.service
+RUN chroot /workdir/rootfs/ protected_install can-utils
+RUN chroot /workdir/rootfs/ protected_install pmount
+RUN chroot /workdir/rootfs/ protected_install pm-utils
+RUN chroot /workdir/rootfs/ protected_install debhelper
+RUN chroot /workdir/rootfs/ protected_install dh-python
+RUN chroot /workdir/rootfs/ protected_install apt-src
+RUN chroot /workdir/rootfs/ apt-get -y autoremove
+
+RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
+
+#update iptables alternatives to legacy
+RUN chroot /workdir/rootfs/ update-alternatives --set iptables /usr/sbin/iptables-legacy
+RUN chroot /workdir/rootfs/ update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+
+RUN chroot /workdir/rootfs/ ln -sf /bin/busybox /bin/usleep
+# create users and set password
+RUN chroot /workdir/rootfs/ useradd -m -G audio -s /bin/bash user
+RUN chroot /workdir/rootfs/ usermod -a -G video user
+RUN chroot /workdir/rootfs/ echo "user:user" | chpasswd
+RUN chroot /workdir/rootfs/ echo "root:root" | chpasswd
+
 RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 
 ## TODO make the above steps into a separate stage or separate docker image

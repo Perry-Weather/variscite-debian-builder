@@ -40,7 +40,7 @@ RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c prep-roo
 RUN chroot /workdir/rootfs/ debconf-set-selections /debconf.set
 RUN chroot /workdir/rootfs/ rm -f /debconf.set
 RUN chroot /workdir/rootfs/ apt-get update || apt-get upgrade
-COPY variscite/protected_install /workdir/rootfs/usr/local/bin/protected_install
+COPY --chmod=755 variscite/protected_install /workdir/rootfs/usr/local/bin/protected_install
 RUN chroot /workdir/rootfs/ protected_install local-apt-repository
 RUN chroot /workdir/rootfs/ apt-get update || apt-get upgrade
 RUN chroot /workdir/rootfs/ protected_install udisks2

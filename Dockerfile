@@ -86,8 +86,8 @@ RUN chroot /workdir/rootfs/ ln -sf /bin/busybox /bin/usleep
 # create users and set password
 RUN chroot /workdir/rootfs/ useradd -m -G audio -s /bin/bash user
 RUN chroot /workdir/rootfs/ usermod -a -G video user
-RUN chroot /workdir/rootfs/ echo "user:user" | chpasswd
-RUN chroot /workdir/rootfs/ echo "root:root" | chpasswd
+RUN chroot /workdir/rootfs/ bash -c 'echo "user:user" | chpasswd'
+RUN chroot /workdir/rootfs/ bash -c 'echo "root:root" | chpasswd'
 
 RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 

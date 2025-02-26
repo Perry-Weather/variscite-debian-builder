@@ -128,6 +128,7 @@ chmod +x ${ROOTFS_BASE}/usr/sbin/policy-rc.d
 
 function make_debian_console_rootfs()
 {
+	local ROOTFS_BASE=$1
 	# install variscite-bt service
 	install -d ${ROOTFS_BASE}/etc/bluetooth
 	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||

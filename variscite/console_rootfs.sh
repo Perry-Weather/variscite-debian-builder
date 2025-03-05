@@ -1,7 +1,7 @@
 # Must be called after make_prepare in main script
 # generate weston rootfs in input dir
 # $1 - rootfs base dir
-function make_debian_console_rootfs()
+function make_debian_console_prepare_rootfs()
 {
 	local ROOTFS_BASE=$1
 
@@ -124,172 +124,11 @@ exit 101
 EOF
 
 chmod +x ${ROOTFS_BASE}/usr/sbin/policy-rc.d
-
-# rootfs packages console only stage
-cat > rootfs-stage-console << EOF
-#!/bin/bash
-# apply debconfig options
-debconf-set-selections /debconf.set
-rm -f /debconf.set
-
-function protected_install()
-{
-	local _name=\${1}
-	local repeated_cnt=5;
-	local RET_CODE=1;
-
-	echo Installing \${_name}
-	for (( c=0; c<\${repeated_cnt}; c++ ))
-	do
-		apt install -y \${_name} && {
-			RET_CODE=0;
-			break;
-		};
-
-		echo
-		echo "##########################"
-		echo "## Fix missing packages ##"
-		echo "##########################"
-		echo
-
-		sleep 2;
-
-		apt --fix-broken install -y && {
-			RET_CODE=0;
-			break;
-		};
-	done
-
-	return \${RET_CODE}
 }
 
-# update packages and install base
-apt-get update || apt-get upgrade
-
-# local-apt-repository support
-protected_install local-apt-repository
-
-# update packages and install base
-apt-get update || apt-get upgrade
-
-#udisk2
-protected_install udisks2
-
-protected_install locales
-protected_install ntp
-protected_install openssh-server
-protected_install nfs-common
-
-# packages required when flashing emmc
-protected_install dosfstools
-
-# fix config for sshd (permit root login)
-sed -i -e 's/#PermitRootLogin.*/PermitRootLogin\tyes/g' /etc/ssh/sshd_config
-
-# net-tools (ifconfig, etc.)
-protected_install net-tools
-protected_install network-manager
-
-if [ "${MACHINE}" = "imx8mq-var-dart" ] ||
-   [ "${MACHINE}" = "imx8mm-var-dart" ] ||
-   [ "${MACHINE}" = "imx8mn-var-som" ] ||
-   [ "${MACHINE}" = "imx8mp-var-dart" ] ||
-   [ "${MACHINE}" = "imx8qm-var-som" ] ||
-   [ "${MACHINE}" = "imx8qxp-var-som" ] ||
-   [ "${MACHINE}" = "imx8qxpb0-var-som" ]; then
-	# sdma package
-	protected_install imx-firmware-sdma
-
-	# VPU package
-	protected_install imx-firmware-vpu
-
-	# epdc package
-	protected_install imx-firmware-epdc
-
-	# hdmi firmware package
-	if [ ! -z "${HDMI_FIRMWARE_PACKAGE}" ]
-	then
-		protected_install ${HDMI_FIRMWARE_PACKAGE}
-	fi
-fi
-
-# killall
-protected_install psmisc
-
-# alsa
-protected_install alsa-utils
-
-# i2c tools
-protected_install i2c-tools
-
-# usb tools
-protected_install usbutils
-
-# libgpiod
-protected_install gpiod
-protected_install libgpiod2
-protected_install python3-libgpiod
-
-# net tools
-protected_install iperf3
-
-protected_install rng-tools
-
-# mtd
-protected_install mtd-utils
-
-# bluetooth
-protected_install bluetooth
-protected_install bluez-obexd
-protected_install bluez-tools
-
-# install pulseaudio
-protected_install pulseaudio
-protected_install pulseaudio-module-bluetooth
-
-# wifi support packages
-protected_install hostapd
-protected_install udhcpd
-
-# disable the hostapd service by default
-systemctl disable hostapd.service
-
-# can support
-protected_install can-utils
-
-# pmount
-protected_install pmount
-
-# pm-utils
-protected_install pm-utils
-
-# install dpkg-dev for dpkg-buildpackage
-protected_install debhelper
-protected_install dh-python
-protected_install apt-src
-apt-get -y autoremove
-
-#update iptables alternatives to legacy
-update-alternatives --set iptables /usr/sbin/iptables-legacy
-update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-
-#install usleep busybox applet
-ln -sf /bin/busybox /bin/usleep
-
-# create users and set password
-useradd -m -G audio -s /bin/bash user
-usermod -a -G video user
-echo "user:user" | chpasswd
-echo "root:root" | chpasswd
-
-# sudo kill rootfs-stage-console
-rm -f rootfs-stage-console
-EOF
-
-	pr_info "rootfs: install selected Debian packages (console-only-stage)"
-	chmod +x rootfs-stage-console
-	chroot ${ROOTFS_BASE} /rootfs-stage-console
-
+function make_debian_console_rootfs()
+{
+	local ROOTFS_BASE=$1
 	# install variscite-bt service
 	install -d ${ROOTFS_BASE}/etc/bluetooth
 	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||

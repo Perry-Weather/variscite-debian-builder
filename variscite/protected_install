@@ -1,0 +1,28 @@
+#!/bin/bash
+
+_name=${1}	
+repeated_cnt=5;
+RET_CODE=1;
+
+echo Installing ${_name}
+for (( c=0; c<${repeated_cnt}; c++ ))
+do
+	apt install -y ${_name} && {
+		RET_CODE=0;
+		break;
+	};
+	echo
+	echo "##########################"
+	echo "## Fix missing packages ##"
+	echo "##########################"
+	echo
+
+	sleep 2;
+
+	apt --fix-broken install -y && {
+		RET_CODE=0;
+		break;
+	};
+done
+
+exit ${RET_CODE}

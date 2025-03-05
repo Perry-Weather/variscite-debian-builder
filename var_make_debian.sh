@@ -1058,10 +1058,14 @@ function cmd_make_deploy()
 	return 0
 }
 
+function cmd_make_prep_rootfs(){
+	make_prepare
+	cd ${G_ROOTFS_DIR}
+	make_debian_console_prepare_rootfs ${G_ROOTFS_DIR}
+}
+
 function cmd_make_rootfs()
 {
-	make_prepare;
-
 	if [ "${MACHINE}" = "imx6ul-var-dart" ] ||
 	   [ "${MACHINE}" = "var-som-mx7" ]; then
 		# make debian console rootfs
@@ -1207,6 +1211,9 @@ case $PARAM_CMD in
 	rootfs )
 		cmd_make_rootfs
 		;;
+	prep-rootfs )
+		cmd_make_prep_rootfs
+		;;
 	packrootfs )
 		cmd_make_pack_rootfs
 		;;
@@ -1247,6 +1254,7 @@ case $PARAM_CMD in
 		cmd_make_kmodules &&
 		cmd_make_kernel_header_deb &&
 		cmd_make_freertos_variscite &&
+		cmd_make_prepare_rootfs
 		cmd_make_rootfs
 		;;
 	clean )

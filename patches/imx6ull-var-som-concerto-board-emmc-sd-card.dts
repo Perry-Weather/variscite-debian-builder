@@ -19,4 +19,14 @@
 / {
 	model = "Variscite VAR-SOM-6UL with i.MX6ULL, eMMC & SD card support on Concerto-Board";
 	compatible = "variscite,imx6ul-var-som", "fsl,imx6ull";
+	run_control {
+		compatible = "gpio-leds";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_java_gpio>, <&pinctrl_java_gpio_snvs>;
+		status = "okay";
+		led_g {
+			gpios = <&gpio3 5 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+	};
 };

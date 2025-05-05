@@ -30,15 +30,15 @@ WORKDIR /workdir
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
 RUN cp imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
 
-RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
-
 # Add wireguard to kernel modules manually
 RUN git clone https://git.zx2c4.com/wireguard-linux-compat
 WORKDIR /workdir/src/kernel
 RUN ../../wireguard-linux-compat/kernel-tree-scripts/create-patch.sh | patch -p1
-RUN echo "CONFIG_WIREGUARD=M" > .config
+RUN echo "CONFIG_NEON=y"
+RUN echo "CONFIG_WIREGUARD=m" > .config
+RUN echo "CONFIG_TUN=m" > .config
 WORKDIR /workdir
-
+RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernelheaders
 
@@ -116,6 +116,9 @@ RUN ln -s /lib/systemd/system/cellular_connection.service /workdir/rootfs/etc/sy
 
 COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/
+RUN	mkdir -p /workdir/rootfs/opt/webserver/configs
+# This is for Remote Relays/Storm Bridge
+COPY firmware/scripts/udhcpd-relays.conf /workdir/rootfs/opt/webserver/configs/udhcpd-relays.template
 
 COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources

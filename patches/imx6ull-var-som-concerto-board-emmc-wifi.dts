@@ -260,13 +260,7 @@
     /delete-property/ pinctrl-names;
     /delete-property/ pinctrl-0;
     /delete-property/ fsl,ext-reset-output;
-	status = "disabled";
 };
-
-&wdog2 {
-	status = "okay";
-	fsl,ext-reset-output;
-}
 
 /* ttymxc2 UART */
 &uart3 {

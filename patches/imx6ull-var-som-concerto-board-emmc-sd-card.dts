@@ -22,7 +22,7 @@
 	run_control {
 		compatible = "gpio-leds";
         pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_java_gpio>, <&pinctrl_java_gpio_snvs>;
+        pinctrl-0 = <&pinctrl_java_gpio>;
 		status = "okay";
 		led_g {
 			gpios = <&gpio3 5 GPIO_ACTIVE_HIGH>;

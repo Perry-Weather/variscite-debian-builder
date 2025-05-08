@@ -64,6 +64,7 @@ readonly G_USER_PACKAGES=" \
 	ntpdate \
 	awscli \
 	libmosquitto-dev \
+	wireguard-tools \
 	p7zip-full"
 
 export LC_ALL=C

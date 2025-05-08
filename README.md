@@ -33,7 +33,7 @@ Now, in the shell of the running container, write an empty image file on your ho
 
 ```bash
 cd /source
-dd if=/dev/zero of=imx6ul-var-dart-debian-sd.img bs=1M count=3720
+dd if=/dev/zero of=imx6ul-var-dart-debian-sd.img bs=1M count=3900
 sudo -S losetup -Pf imx6ul-var-dart-debian-sd.img
 ## The sudo password is ubuntu
 ```

@@ -66,7 +66,7 @@
         };
         bg95_ls {
             gpios = <&gpio3 8 GPIO_ACTIVE_HIGH>;
-            default-state = "off";
+            default-state = "on";
         };
         weather_ls {
             gpios = <&gpio3 17 GPIO_ACTIVE_HIGH>;
@@ -86,7 +86,7 @@
         };
         bg95_rst {
             gpios = <&gpio5 9 GPIO_ACTIVE_HIGH>;
-            default-state = "off";
+            default-state = "on";
         };
         camera_ls {
             gpios = <&gpio3 7 GPIO_ACTIVE_HIGH>;
@@ -255,7 +255,7 @@
 	phy-reset-gpios=<&gpio1 31 GPIO_ACTIVE_LOW>;
 };
 
-/* wdog to avoid confclicts with ADC Pin */
+/* wdog to avoid conflicts with ADC Pin */
 &wdog1 {
     /delete-property/ pinctrl-names;
     /delete-property/ pinctrl-0;

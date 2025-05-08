@@ -304,6 +304,12 @@ install_rootfs_to_emmc()
 	echo "Creating directory needed for the Camera Image capture"
 	mkdir -p ${mountdir_prefix}${rootfspart}/opt/webserver/camera/
 
+	echo "Setting SSH Authorized Keys"
+	mkdir -p ${mountdir_prefix}${rootfspart}/root/.ssh
+	echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa2Pqo6u7ksi7TPrsmAWNuYrp0t0dLjT8ylXTjtoCx8 administration@perryweather.com' > ${mountdir_prefix}${rootfspart}/root/.ssh/authorized_keys
+	# Disable password login
+	sed -i 's/^UsePAM yes/UsePAM no/' ${mountdir_prefix}${rootfspart}/etc/ssh/sshd_config
+
 	echo
 	sync
 	umount ${node}${part}${rootfspart}

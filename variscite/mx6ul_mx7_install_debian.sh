@@ -282,7 +282,7 @@ install_kernel_to_emmc()
 	cd ${IMGS_PATH}
 	cp -v ${KERNEL_DTBS}	${mountdir_prefix}${bootpart}
 	cp -v ${KERNEL_IMAGE}	${mountdir_prefix}${bootpart}
-	echo "bootargs=net.ifnames=0 nowayout=1" >> ${mountdir_prefix}${bootpart}/uEnv.txt
+	echo "bootargs=net.ifnames=0 imx2_wdt.nowayout=1" >> ${mountdir_prefix}${bootpart}/uEnv.txt
 	cd - >/dev/null
 	sync
 	umount ${node}${part}${bootpart}

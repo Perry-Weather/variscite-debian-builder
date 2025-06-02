@@ -125,9 +125,9 @@ COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
 COPY firmware/resources/ /workdir/rootfs/opt/webserver/resources/
 
-# Copy over network setup pages for the customer-facing web ui
-RUN mkdir /workdir/rootfs/opt/webserver/resources/setup
-COPY firmware/resources/setup/network.html /workdir/rootfs/opt/webserver/resources/setup/
+# Disable password login in SSH
+RUN sed -i 's/^UsePAM yes/UsePAM no/' /workdir/rootfs/etc/ssh/sshd_config
+RUN sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /workdir/rootfs/etc/ssh/sshd_config
 
 COPY --chmod=644 firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
 COPY --chmod=644 firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer

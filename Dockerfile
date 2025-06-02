@@ -116,8 +116,10 @@ RUN ln -s /lib/systemd/system/cellular_connection.service /workdir/rootfs/etc/sy
 COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/configs
-# This is for Remote Relays/Storm Bridge
+# This is for Remote Relays/Storm Bridge and the wifi setup network
 COPY firmware/scripts/udhcpd-relays.conf /workdir/rootfs/opt/webserver/configs/udhcpd-relays.template
+COPY firmware/scripts/udhcpd-wifi.conf /workdir/rootfs/etc/udhcpd-wifi.conf
+COPY firmware/scripts/udhcpd-wifi.service /workdir/rootfs/etc/systemd/system/
 
 COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources

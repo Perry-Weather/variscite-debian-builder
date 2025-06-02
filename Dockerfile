@@ -121,6 +121,10 @@ COPY firmware/scripts/udhcpd-relays.conf /workdir/rootfs/opt/webserver/configs/u
 COPY firmware/scripts/udhcpd-wifi.conf /workdir/rootfs/etc/udhcpd-wifi.conf
 COPY firmware/scripts/udhcpd-wifi.service /workdir/rootfs/etc/systemd/system/
 
+# Copy over network setup pages for the customer-facing web ui
+RUN mkdir /workdir/rootfs/opt/webserver/resources/setup
+COPY firmware/resources/setup/network.html /workdir/rootfs/opt/webserver/resources/setup/
+
 COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
 COPY firmware/resources/ /workdir/rootfs/opt/webserver/resources/

@@ -122,9 +122,9 @@ COPY firmware/scripts/udhcpd-wifi.conf /workdir/rootfs/etc/udhcpd-wifi.conf
 COPY firmware/scripts/udhcpd-wifi.service /workdir/rootfs/etc/systemd/system/
 
 # Web API Health Monitoring
-COPY firmware/scripts/api_health.service /etc/systemd/system/
-COPY firmware/scripts/api_health.timer /etc/systemd/system/
-COPY --chmod=755 firmware/scripts/api_check.sh /usr/bin/api_check.sh
+COPY firmware/scripts/api_health.service /workdir/rootfs/etc/systemd/system/
+COPY firmware/scripts/api_health.timer /workdir/rootfs/etc/systemd/system/
+COPY --chmod=755 firmware/scripts/api_check.sh /workdir/rootfs/usr/bin/api_check.sh
 
 COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources

@@ -120,7 +120,7 @@ RUN	mkdir -p /workdir/rootfs/opt/webserver/configs
 COPY firmware/scripts/udhcpd-relays.conf /workdir/rootfs/opt/webserver/configs/udhcpd-relays.template
 COPY firmware/scripts/udhcpd-wifi.conf /workdir/rootfs/etc/udhcpd-wifi.conf
 COPY firmware/scripts/udhcpd-wifi.service /workdir/rootfs/etc/systemd/system/
-COPY firmware/scripts/udhcpd-relays.service /workdir/rootfs/lib/systemd/system/
+COPY firmware/scripts/udhcpd-relays.service  /workdir/rootfs/etc/systemd/system/
 
 # Web API Health Monitoring
 COPY firmware/scripts/api_health.service /workdir/rootfs/etc/systemd/system/

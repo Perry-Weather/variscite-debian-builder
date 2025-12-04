@@ -34,8 +34,8 @@ RUN cp imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/
 RUN git clone https://git.zx2c4.com/wireguard-linux-compat
 WORKDIR /workdir/src/kernel
 RUN ../../wireguard-linux-compat/kernel-tree-scripts/create-patch.sh | patch -p1
-RUN echo "CONFIG_WIREGUARD=m" > .config
-RUN echo "CONFIG_TUN=m" > .config
+RUN echo "CONFIG_WIREGUARD=m" >> .config
+RUN echo "CONFIG_TUN=m" >> .config
 WORKDIR /workdir
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules

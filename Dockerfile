@@ -28,6 +28,7 @@ RUN git apply ../../0011*.patch -v
 RUN git apply ../../0013*.patch -v
 WORKDIR /workdir
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+RUN cp imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts
 RUN cp imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
 
 # Add wireguard to kernel modules manually

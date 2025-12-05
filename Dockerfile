@@ -133,8 +133,8 @@ RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
 COPY firmware/resources/ /workdir/rootfs/opt/webserver/resources/
 
 # Disable password login in SSH
-RUN sed -i 's/^UsePAM yes/UsePAM no/' /workdir/rootfs/etc/ssh/sshd_config
-RUN sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /workdir/rootfs/etc/ssh/sshd_config
+RUN sed -i 's/^UsePAM yes/UsePAM no/' /workdir/rootfs/etc/ssh/sshd_config && \
+    sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /workdir/rootfs/etc/ssh/sshd_config
 
 COPY --chmod=644 firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
 COPY --chmod=644 firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
@@ -145,12 +145,15 @@ COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
 
 RUN mkdir -p /workdir/rootfs/opt/webserver/logs/
 
-RUN mkdir -p /workdir/rootfs/opt/ota/
-RUN mkdir -p /workdir/rootfs/opt/ota/zip/
-RUN	mkdir -p /workdir/rootfs/opt/ota/firmwares/
+RUN mkdir -p /workdir/rootfs/opt/ota/ && \
+    mkdir -p /workdir/rootfs/opt/ota/zip/ && \
+    mkdir -p /workdir/rootfs/opt/ota/firmwares/
 
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
+
+COPY firmware/boot.cmd /workdir
+RUN mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "Codec Selection" -d /workdir/boot.cmd /workdir/boot.scr &&  mkdir /workdir/rootfs/opt/bootscripts &&  cp boot.scr /workdir/rootfs/opt/bootscripts/.
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

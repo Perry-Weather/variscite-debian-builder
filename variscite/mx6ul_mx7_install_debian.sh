@@ -274,18 +274,50 @@ install_bootloader_to_emmc()
 
 install_kernel_to_emmc()
 {
-	echo
-	echo "Installing kernel to BOOT partition"
+    echo
+    echo "Installing kernel to BOOT partition"
 
-	mkdir -p ${mountdir_prefix}${bootpart}
-	mount -t vfat ${node}${part}${bootpart}		${mountdir_prefix}${bootpart}
-	cd ${IMGS_PATH}
-	cp -v ${KERNEL_DTBS}	${mountdir_prefix}${bootpart}
-	cp -v ${KERNEL_IMAGE}	${mountdir_prefix}${bootpart}
-	echo "kernelargs=net.ifnames=0 imx2_wdt.nowayout=1" >> ${mountdir_prefix}${bootpart}/uEnv.txt
-	cd - >/dev/null
-	sync
-	umount ${node}${part}${bootpart}
+    # Define variables for clarity
+    local BOOT_MOUNT_DIR="${mountdir_prefix}${bootpart}"
+    local BOOT_DEV="${node}${part}${bootpart}"
+    local UENV_FILE="${BOOT_MOUNT_DIR}/uEnv.txt"
+    local SCRIPT_SOURCE="/opt/bootscripts/boot.scr" # Source path in the rootfs
+
+    mkdir -p ${BOOT_MOUNT_DIR}
+    mount -t vfat ${BOOT_DEV} ${BOOT_MOUNT_DIR}
+
+    cd ${IMGS_PATH}
+
+    # Existing operations: Copying DTBs and Kernel Image
+    cp -v ${KERNEL_DTBS} ${BOOT_MOUNT_DIR}
+    cp -v ${KERNEL_IMAGE} ${BOOT_MOUNT_DIR}
+
+    # --- START CUSTOM BOOT SCRIPT INTEGRATION ---
+
+    # 1. Copy the compiled boot.scr from the rootfs source path (/opt/bootscripts/)
+    #    to the root of the BOOT partition (where uEnv.txt lives).
+    echo "Copying custom U-Boot script..."
+    cp -v ${SCRIPT_SOURCE} ${BOOT_MOUNT_DIR}/boot.scr
+
+    # 2. Append the uenvcmd to uEnv.txt to execute the script
+    local UENV_CMD="uenvcmd=load mmc \${mmcdev}:\${mmcpart} \${loadaddr} boot.scr; source \${loadaddr}"
+
+    # Safety check: Ensure the uenvcmd is not already present before appending
+    if ! grep -q "uenvcmd=" ${UENV_FILE} 2>/dev/null; then
+        echo "Appending U-Boot script execution command to uEnv.txt"
+        echo "${UENV_CMD}" >> ${UENV_FILE}
+    else
+        echo "Warning: uenvcmd already exists in uEnv.txt. Skipping append."
+    fi
+
+    # --- END CUSTOM BOOT SCRIPT INTEGRATION ---
+
+    # Existing operations: Append kernel args and cleanup
+    echo "kernelargs=net.ifnames=0 imx2_wdt.nowayout=1" >> ${UENV_FILE}
+
+    cd - >/dev/null
+    sync
+    umount ${BOOT_DEV}
 }
 
 install_rootfs_to_emmc()

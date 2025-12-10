@@ -296,7 +296,7 @@ install_kernel_to_emmc()
 
     # Read Word (w) from Bus 1, Addr 0x1a, Reg 0x0. Force (-f) to avoid busy errors.
     # 2>/dev/null hides errors if the device is missing entirely.
-    CODEC_ID=$(i2cget -f -y 1 0x1a 0x0 w 2>/dev/null)
+    CODEC_ID=$(i2cget -f -y 1 0x1a 0x0 w 2>/dev/null || true)
 
     if [ "$CODEC_ID" == "0x0489" ]; then
         echo "MATCH: WM8904 Codec Detected (ID: $CODEC_ID) (rev1.4+)"

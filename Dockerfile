@@ -152,8 +152,5 @@ RUN mkdir -p /workdir/rootfs/opt/ota/ && \
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
 
-COPY firmware/boot.cmd /workdir
-RUN mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "Codec Selection" -d /workdir/boot.cmd /workdir/boot.scr &&  mkdir /workdir/rootfs/opt/bootscripts &&  cp boot.scr /workdir/rootfs/opt/bootscripts/.
-
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

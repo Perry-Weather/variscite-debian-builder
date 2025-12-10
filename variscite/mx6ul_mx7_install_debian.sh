@@ -288,29 +288,24 @@ install_kernel_to_emmc()
 
     cd ${IMGS_PATH}
 
-    # Existing operations: Copying DTBs and Kernel Image
     cp -v ${KERNEL_DTBS} ${BOOT_MOUNT_DIR}
     cp -v ${KERNEL_IMAGE} ${BOOT_MOUNT_DIR}
 
-    # --- START CUSTOM BOOT SCRIPT INTEGRATION ---
+    # 2. Hardware Detection (Run directly in Linux)
+    echo "Probing I2C Bus 1 for WM8904 Codec..."
 
-    # 1. Copy the compiled boot.scr from the rootfs source path (/opt/bootscripts/)
-    #    to the root of the BOOT partition (where uEnv.txt lives).
-    echo "Copying custom U-Boot script..."
-    cp -v ${SCRIPT_SOURCE} ${BOOT_MOUNT_DIR}/boot.scr
+    # Read Word (w) from Bus 1, Addr 0x1a, Reg 0x0. Force (-f) to avoid busy errors.
+    # 2>/dev/null hides errors if the device is missing entirely.
+    CODEC_ID=$(i2cget -f -y 1 0x1a 0x0 w 2>/dev/null)
 
-    # 2. Append the uenvcmd to uEnv.txt to execute the script
-    local UENV_CMD="uenvcmd=load mmc \${mmcdev}:\${mmcpart} \${loadaddr} boot.scr; source \${loadaddr}"
-
-    # Safety check: Ensure the uenvcmd is not already present before appending
-    if ! grep -q "uenvcmd=" ${UENV_FILE} 2>/dev/null; then
-        echo "Appending U-Boot script execution command to uEnv.txt"
-        echo "${UENV_CMD}" >> ${UENV_FILE}
+    if [ "$CODEC_ID" == "0x0489" ]; then
+        echo "MATCH: WM8904 Codec Detected (ID: $CODEC_ID) (rev1.4+)"
+        echo "Forcing fdt_file in uEnv.txt..."
+        echo "fdt_file=imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dtb" >> ${UENV_FILE}
     else
-        echo "Warning: uenvcmd already exists in uEnv.txt. Skipping append."
+        echo "NO MATCH: WM8904 not found (ID: $CODEC_ID)."
+        echo "Skipping fdt_file in uEnv.txt (Allowing U-Boot auto-detection)."
     fi
-
-    # --- END CUSTOM BOOT SCRIPT INTEGRATION ---
 
     # Existing operations: Append kernel args and cleanup
     echo "kernelargs=net.ifnames=0 imx2_wdt.nowayout=1" >> ${UENV_FILE}

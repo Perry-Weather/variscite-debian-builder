@@ -28,14 +28,15 @@ RUN git apply ../../0011*.patch -v
 RUN git apply ../../0013*.patch -v
 WORKDIR /workdir
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
+RUN cp imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts
 RUN cp imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-sd-card.dts
 
 # Add wireguard to kernel modules manually
 RUN git clone https://git.zx2c4.com/wireguard-linux-compat
 WORKDIR /workdir/src/kernel
 RUN ../../wireguard-linux-compat/kernel-tree-scripts/create-patch.sh | patch -p1
-RUN echo "CONFIG_WIREGUARD=m" > .config
-RUN echo "CONFIG_TUN=m" > .config
+RUN echo "CONFIG_WIREGUARD=m" >> .config
+RUN echo "CONFIG_TUN=m" >> .config
 WORKDIR /workdir
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
@@ -132,8 +133,8 @@ RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
 COPY firmware/resources/ /workdir/rootfs/opt/webserver/resources/
 
 # Disable password login in SSH
-RUN sed -i 's/^UsePAM yes/UsePAM no/' /workdir/rootfs/etc/ssh/sshd_config
-RUN sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /workdir/rootfs/etc/ssh/sshd_config
+RUN sed -i 's/^UsePAM yes/UsePAM no/' /workdir/rootfs/etc/ssh/sshd_config && \
+    sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /workdir/rootfs/etc/ssh/sshd_config
 
 COPY --chmod=644 firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
 COPY --chmod=644 firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
@@ -144,9 +145,9 @@ COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
 
 RUN mkdir -p /workdir/rootfs/opt/webserver/logs/
 
-RUN mkdir -p /workdir/rootfs/opt/ota/
-RUN mkdir -p /workdir/rootfs/opt/ota/zip/
-RUN	mkdir -p /workdir/rootfs/opt/ota/firmwares/
+RUN mkdir -p /workdir/rootfs/opt/ota/ && \
+    mkdir -p /workdir/rootfs/opt/ota/zip/ && \
+    mkdir -p /workdir/rootfs/opt/ota/firmwares/
 
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/

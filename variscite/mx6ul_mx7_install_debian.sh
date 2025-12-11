@@ -274,18 +274,45 @@ install_bootloader_to_emmc()
 
 install_kernel_to_emmc()
 {
-	echo
-	echo "Installing kernel to BOOT partition"
+    echo
+    echo "Installing kernel to BOOT partition"
 
-	mkdir -p ${mountdir_prefix}${bootpart}
-	mount -t vfat ${node}${part}${bootpart}		${mountdir_prefix}${bootpart}
-	cd ${IMGS_PATH}
-	cp -v ${KERNEL_DTBS}	${mountdir_prefix}${bootpart}
-	cp -v ${KERNEL_IMAGE}	${mountdir_prefix}${bootpart}
-	echo "kernelargs=net.ifnames=0 imx2_wdt.nowayout=1" >> ${mountdir_prefix}${bootpart}/uEnv.txt
-	cd - >/dev/null
-	sync
-	umount ${node}${part}${bootpart}
+    # Define variables for clarity
+    local BOOT_MOUNT_DIR="${mountdir_prefix}${bootpart}"
+    local BOOT_DEV="${node}${part}${bootpart}"
+    local UENV_FILE="${BOOT_MOUNT_DIR}/uEnv.txt"
+    local SCRIPT_SOURCE="/opt/bootscripts/boot.scr" # Source path in the rootfs
+
+    mkdir -p ${BOOT_MOUNT_DIR}
+    mount -t vfat ${BOOT_DEV} ${BOOT_MOUNT_DIR}
+
+    cd ${IMGS_PATH}
+
+    cp -v ${KERNEL_DTBS} ${BOOT_MOUNT_DIR}
+    cp -v ${KERNEL_IMAGE} ${BOOT_MOUNT_DIR}
+
+    # 2. Hardware Detection (Run directly in Linux)
+    echo "Probing I2C Bus 1 for WM8904 Codec..."
+
+    # Read Word (w) from Bus 1, Addr 0x1a, Reg 0x0. Force (-f) to avoid busy errors.
+    # 2>/dev/null hides errors if the device is missing entirely.
+    CODEC_ID=$(i2cget -f -y 1 0x1a 0x0 w 2>/dev/null || true)
+
+    if [ "$CODEC_ID" == "0x0489" ]; then
+        echo "MATCH: WM8904 Codec Detected (ID: $CODEC_ID) (rev1.4+)"
+        echo "Forcing fdt_file in uEnv.txt..."
+        echo "fdt_file=imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dtb" >> ${UENV_FILE}
+    else
+        echo "NO MATCH: WM8904 not found (ID: $CODEC_ID)."
+        echo "Skipping fdt_file in uEnv.txt (Allowing U-Boot auto-detection)."
+    fi
+
+    # Existing operations: Append kernel args and cleanup
+    echo "kernelargs=net.ifnames=0 imx2_wdt.nowayout=1" >> ${UENV_FILE}
+
+    cd - >/dev/null
+    sync
+    umount ${BOOT_DEV}
 }
 
 install_rootfs_to_emmc()

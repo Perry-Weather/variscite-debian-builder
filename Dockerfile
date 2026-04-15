@@ -26,7 +26,6 @@ RUN git apply ../../0006*.patch -v
 RUN git apply ../../0007*.patch -v
 RUN git apply ../../0011*.patch -v
 RUN git apply ../../0013*.patch -v
-RUN git apply ../../0014*.patch -v --ignore-whitespace
 WORKDIR /workdir
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts
@@ -144,7 +143,7 @@ RUN rm /workdir/rootfs/etc/cron.daily/logrotate
 COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
 
 # Copy over siren tones
-COPY firmware/otas/upgrade_3.0.0/Mastered\ Files/* /workdir/rootfs/opt/webserver/configs/audio/
+COPY "firmware/otas/upgrade_3.0.0/Mastered Files/*" /workdir/rootfs/opt/webserver/configs/audio/
 # COPY memfault executables
 COPY firmware/otas/upgrade_3.0.0/memfault-device-info firmware/otas/upgrade_3.0.0/memfaultctl firmware/otas/upgrade_3.0.0/memfaultd /workdir/rootfs/usr/bin/
 # COPY memfault config

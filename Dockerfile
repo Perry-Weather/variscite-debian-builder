@@ -143,7 +143,7 @@ RUN rm /workdir/rootfs/etc/cron.daily/logrotate
 COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
 
 # Copy over siren tones
-COPY "firmware/otas/upgrade_3.0.0/Mastered Files/*" /workdir/rootfs/opt/webserver/configs/audio/
+COPY ["firmware/otas/upgrade_3.0.0/Mastered Files/*","/workdir/rootfs/opt/webserver/configs/audio/"]
 # COPY memfault executables
 COPY firmware/otas/upgrade_3.0.0/memfault-device-info firmware/otas/upgrade_3.0.0/memfaultctl firmware/otas/upgrade_3.0.0/memfaultd /workdir/rootfs/usr/bin/
 # COPY memfault config

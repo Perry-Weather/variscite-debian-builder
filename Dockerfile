@@ -26,6 +26,7 @@ RUN git apply ../../0006*.patch -v
 RUN git apply ../../0007*.patch -v
 RUN git apply ../../0011*.patch -v
 RUN git apply ../../0013*.patch -v
+RUN git apply ../../0014*.patch -v --ignore-whitespace
 WORKDIR /workdir
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi.dts
 RUN cp imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts /workdir/src/kernel/arch/arm/boot/dts/imx6ull-var-som-concerto-board-emmc-wifi-wm8904.dts
@@ -109,8 +110,7 @@ COPY firmware/scripts/java_init.service /workdir/rootfs/lib/systemd/system/
 COPY firmware/scripts/java_init.sh /workdir/rootfs/usr/bin/
 RUN ln -s /lib/systemd/system/java_init.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/java_init.service
 
-COPY firmware/scripts/cellular/java_cellular.sh /workdir/rootfs/usr/bin/
-COPY firmware/scripts/cellular/quectel-CM /workdir/rootfs/usr/bin/
+COPY firmware/scripts/cellular/java_cellular.sh firmware/scripts/cellular/quectel-CM /workdir/rootfs/usr/bin/
 COPY firmware/scripts/cellular/cellular_connection.service /workdir/rootfs/lib/systemd/system/
 RUN ln -s /lib/systemd/system/cellular_connection.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
@@ -120,8 +120,8 @@ RUN	mkdir -p /workdir/rootfs/opt/webserver/configs
 # This is for Remote Relays/Storm Bridge and the wifi setup network
 COPY firmware/scripts/udhcpd-relays.conf /workdir/rootfs/opt/webserver/configs/udhcpd-relays.template
 COPY firmware/scripts/udhcpd-wifi.conf /workdir/rootfs/etc/udhcpd-wifi.conf
-COPY firmware/scripts/udhcpd-wifi.service /workdir/rootfs/etc/systemd/system/
-COPY firmware/scripts/udhcpd-relays.service  /workdir/rootfs/etc/systemd/system/
+# Also sneaking in memfault into this to save layers
+COPY firmware/scripts/udhcpd-wifi.service firmware/scripts/udhcpd-relays.service firmware/scripts/memfaultd.service /workdir/rootfs/etc/systemd/system/
 
 # Web API Health Monitoring
 COPY firmware/scripts/api_health.service /workdir/rootfs/etc/systemd/system/
@@ -142,6 +142,13 @@ COPY --chmod=644 firmware/scripts/logrotate/logrotate /workdir/rootfs/etc/cron.h
 RUN rm /workdir/rootfs/etc/cron.daily/logrotate
 
 COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
+
+# Copy over siren tones
+COPY firmware/otas/upgrade_3.0.0/Mastered\ Files/* /workdir/rootfs/opt/webserver/configs/audio/
+# COPY memfault executables
+COPY firmware/otas/upgrade_3.0.0/memfault-device-info firmware/otas/upgrade_3.0.0/memfaultctl firmware/otas/upgrade_3.0.0/memfaultd /workdir/rootfs/usr/bin/
+# COPY memfault config
+COPY firmware/otas/upgrade_3.0.0/memfaultd.conf /workdir/rootfs/etc/
 
 RUN mkdir -p /workdir/rootfs/opt/webserver/logs/
 

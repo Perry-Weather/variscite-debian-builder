@@ -11,6 +11,8 @@ firmware:
 	cp ${FW_DIR}bin/java-server firmware/java-server
 	cp -R ${FW_DIR}scripts firmware/scripts
 	cp -R ${FW_DIR}resources firmware/resources
+	cp -R ${FW_DIR}otas firmware/otas
+	cp -R ${FW_DIR}bin firmware/bin
 	git -C ${FW_DIR} checkout $$(cat firmware/branch)
 	-git -C ${FW_DIR} stash apply stash^{/image-builder-make}
 	rm firmware/branch
@@ -19,3 +21,4 @@ clean:
 	rm -rf firmware
 
 PHONY: clean
+

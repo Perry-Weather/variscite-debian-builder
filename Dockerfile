@@ -107,26 +107,16 @@ RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 
 COPY firmware/scripts/java_init.service /workdir/rootfs/lib/systemd/system/
 COPY firmware/scripts/java_init.sh /workdir/rootfs/usr/bin/
-RUN ln -s /lib/systemd/system/java_init.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/java_init.service
 
-COPY firmware/scripts/cellular/java_cellular.sh /workdir/rootfs/usr/bin/
 COPY firmware/scripts/cellular/quectel-CM /workdir/rootfs/usr/bin/
-COPY firmware/scripts/cellular/cellular_connection.service /workdir/rootfs/lib/systemd/system/
-RUN ln -s /lib/systemd/system/cellular_connection.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/cellular_connection.service
 
 COPY firmware/scripts/udhcpd /workdir/rootfs/etc/default/
 COPY firmware/scripts/udhcpd.conf /workdir/rootfs/etc/
-RUN	mkdir -p /workdir/rootfs/opt/webserver/configs
+RUN	mkdir -p /workdir/rootfs/opt/webserver/configs/audio
 # This is for Remote Relays/Storm Bridge and the wifi setup network
 COPY firmware/scripts/udhcpd-relays.conf /workdir/rootfs/opt/webserver/configs/udhcpd-relays.template
 COPY firmware/scripts/udhcpd-wifi.conf /workdir/rootfs/etc/udhcpd-wifi.conf
-COPY firmware/scripts/udhcpd-wifi.service /workdir/rootfs/etc/systemd/system/
-COPY firmware/scripts/udhcpd-relays.service  /workdir/rootfs/etc/systemd/system/
-
-# Web API Health Monitoring
-COPY firmware/scripts/api_health.service /workdir/rootfs/etc/systemd/system/
-COPY firmware/scripts/api_health.timer /workdir/rootfs/etc/systemd/system/
-COPY --chmod=755 firmware/scripts/api_check.sh /workdir/rootfs/usr/bin/api_check.sh
+COPY firmware/scripts/udhcpd-wifi.service firmware/scripts/udhcpd-relays.service /workdir/rootfs/etc/systemd/system/
 
 COPY firmware/java-server /workdir/rootfs/usr/bin/
 RUN	mkdir -p /workdir/rootfs/opt/webserver/resources
@@ -151,6 +141,21 @@ RUN mkdir -p /workdir/rootfs/opt/ota/ && \
 
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
+COPY firmware/scripts/install_manifest.sh /workdir/rootfs/usr/bin/
+
+# This marks the demarcation point of a paradigm shift. Instead of individually managing OTA copies and image copies
+# We use the same manifest. For this to work, we need to entirety of the firmware in the Docker image (but not the sd card disk image)
+COPY firmware /workdir/firmware
+
+RUN ls /workdir/
+RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade_3.1.0/manifest.tsv /workdir/firmware /workdir/rootfs/
+
+# Enabled service links
+RUN ln -s /lib/systemd/system/memfaultd.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/memfaultd.service
+RUN ln -s /lib/systemd/system/java_init.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/java_init.service
+RUN ln -s /lib/systemd/system/api_health.timer /workdir/rootfs/etc/systemd/system/multi-user.target.wants/api_health.timer
+RUN ln -s /lib/systemd/system/fake-hwclock.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/fake-hwclock.service
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs
+

@@ -105,6 +105,13 @@ RUN --security=insecure MACHINE=imx6ul-var-dart ./var_make_debian.sh -c rootfs
 # Steps after this are small and fast, and so they should complete quickly
 # Allowing us to (in most cases) iterate and build images in seconds instead of hours.
 
+# U-Boot boot script -- arms WDOG1 before the kernel loads (VUL-228).
+# install_debian.sh copies this onto the eMMC BOOT partition at flash time.
+COPY bootscripts /workdir/bootscripts
+RUN mkdir -p /workdir/rootfs/opt/bootscripts && \
+    mkimage -A arm -O linux -T script -C none -n "PW watchdog bootscript" \
+        -d /workdir/bootscripts/boot.cmd /workdir/rootfs/opt/bootscripts/boot.scr
+
 COPY firmware/scripts/java_init.service /workdir/rootfs/lib/systemd/system/
 COPY firmware/scripts/java_init.sh /workdir/rootfs/usr/bin/
 

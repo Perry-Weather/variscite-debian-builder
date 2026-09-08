@@ -19,10 +19,10 @@ do
 
 	sleep 2;
 
-	apt --fix-broken install -y && {
-		RET_CODE=0;
-		break;
-	};
+	# Remediation between attempts, never a success condition: with nothing
+	# broken this exits 0, and treating that as success would report the
+	# package installed without ever installing it.
+	apt --fix-broken install -y
 done
 
 exit ${RET_CODE}

@@ -1,0 +1,21 @@
+# The build only COPYs var_make_debian.sh, variscite, patches, bootscripts and
+# firmware. Everything listed here is large, generated, or both, and keeping it
+# out of the context also keeps a future `COPY . ...` from silently pulling in
+# several GB.
+
+.git
+.gitignore
+
+# Built SD card images
+*.img
+*.img.gz
+
+# var_make_debian.sh working directories (see .gitignore)
+src
+toolchain
+rootfs
+output
+tmp
+
+output.log
+.DS_Store

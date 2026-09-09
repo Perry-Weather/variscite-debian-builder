@@ -35,8 +35,12 @@ RUN cp imx6ull-var-som-concerto-board-emmc-sd-card.dts /workdir/src/kernel/arch/
 RUN git clone https://git.zx2c4.com/wireguard-linux-compat
 WORKDIR /workdir/src/kernel
 RUN ../../wireguard-linux-compat/kernel-tree-scripts/create-patch.sh | patch -p1
-RUN echo "CONFIG_WIREGUARD=m" >> .config
-RUN echo "CONFIG_TUN=m" >> .config
+# Kernel symbols go in the defconfig, not .config: var_make_debian.sh runs
+# `make imx_v7_var_defconfig` before building, which regenerates .config.
+RUN echo "CONFIG_WIREGUARD=m" >> arch/arm/configs/imx_v7_var_defconfig
+RUN echo "CONFIG_TUN=m" >> arch/arm/configs/imx_v7_var_defconfig
+# PCF85363 RTC on i2c4, new board revision
+RUN echo "CONFIG_RTC_DRV_PCF85363=y" >> arch/arm/configs/imx_v7_var_defconfig
 WORKDIR /workdir
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c kernel
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c modules
@@ -162,6 +166,10 @@ RUN ln -s /lib/systemd/system/memfaultd.service /workdir/rootfs/etc/systemd/syst
 RUN ln -s /lib/systemd/system/java_init.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/java_init.service
 RUN ln -s /lib/systemd/system/api_health.timer /workdir/rootfs/etc/systemd/system/multi-user.target.wants/api_health.timer
 RUN ln -s /lib/systemd/system/fake-hwclock.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/fake-hwclock.service
+
+# Disabled service links. variscite-bt hciattaches /dev/ttymxc1, which no longer
+# exists now that UART2 carries I2C4.
+RUN rm -f /workdir/rootfs/etc/systemd/system/multi-user.target.wants/variscite-bt.service
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

@@ -140,15 +140,15 @@ RUN sed -i 's/^UsePAM yes/UsePAM no/' /workdir/rootfs/etc/ssh/sshd_config && \
 COPY --chmod=644 firmware/scripts/logrotate/rsyslog /workdir/rootfs/etc/logrotate.d/rsyslog
 COPY --chmod=644 firmware/scripts/logrotate/logrotate.timer /workdir/rootfs/lib/systemd/system/logrotate.timer
 COPY --chmod=644 firmware/scripts/logrotate/logrotate /workdir/rootfs/etc/cron.hourly/logrotate
-RUN rm /workdir/rootfs/etc/cron.daily/logrotate
+# Directory scaffolding and the cron.daily removal, batched into one layer to
+# stay clear of the overlay2 128-layer cap.
+RUN rm /workdir/rootfs/etc/cron.daily/logrotate && \
+    mkdir -p /workdir/rootfs/opt/webserver/logs/ \
+             /workdir/rootfs/opt/ota/ \
+             /workdir/rootfs/opt/ota/zip/ \
+             /workdir/rootfs/opt/ota/firmwares/
 
 COPY firmware/scripts/mqtt/ /workdir/rootfs/opt/mqtt
-
-RUN mkdir -p /workdir/rootfs/opt/webserver/logs/
-
-RUN mkdir -p /workdir/rootfs/opt/ota/ && \
-    mkdir -p /workdir/rootfs/opt/ota/zip/ && \
-    mkdir -p /workdir/rootfs/opt/ota/firmwares/
 
 COPY firmware/scripts/get_and_verify_firmware.sh /workdir/rootfs/opt/ota/
 COPY firmware/scripts/ota_update.sh /workdir/rootfs/opt/ota/
@@ -161,15 +161,18 @@ COPY firmware /workdir/firmware
 RUN ls /workdir/
 RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade_3.1.0/manifest.tsv /workdir/firmware /workdir/rootfs/
 
-# Enabled service links
-RUN ln -s /lib/systemd/system/memfaultd.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/memfaultd.service
-RUN ln -s /lib/systemd/system/java_init.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/java_init.service
-RUN ln -s /lib/systemd/system/api_health.timer /workdir/rootfs/etc/systemd/system/multi-user.target.wants/api_health.timer
-RUN ln -s /lib/systemd/system/fake-hwclock.service /workdir/rootfs/etc/systemd/system/multi-user.target.wants/fake-hwclock.service
-
-# Disabled service links. variscite-bt hciattaches /dev/ttymxc1, which no longer
+# Service enablement. One layer on purpose: overlay2 caps an image at 128
+# layers and the per-package protected_install checkpoints are worth more of
+# that budget than these are. None of these can fail in a way a checkpoint
+# would help with.
+# variscite-bt is removed because it hciattaches /dev/ttymxc1, which no longer
 # exists now that UART2 carries I2C4.
-RUN rm -f /workdir/rootfs/etc/systemd/system/multi-user.target.wants/variscite-bt.service
+RUN cd /workdir/rootfs/etc/systemd/system/multi-user.target.wants && \
+    ln -s /lib/systemd/system/memfaultd.service memfaultd.service && \
+    ln -s /lib/systemd/system/java_init.service java_init.service && \
+    ln -s /lib/systemd/system/api_health.timer api_health.timer && \
+    ln -s /lib/systemd/system/fake-hwclock.service fake-hwclock.service && \
+    rm -f variscite-bt.service
 
 # We can modify the contents of the rootfs at this point before its actually written to an image
 RUN MACHINE=imx6ul-var-dart ./var_make_debian.sh -c packrootfs

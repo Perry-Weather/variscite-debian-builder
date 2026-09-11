@@ -291,6 +291,10 @@ install_kernel_to_emmc()
     cp -v ${KERNEL_DTBS} ${BOOT_MOUNT_DIR}
     cp -v ${KERNEL_IMAGE} ${BOOT_MOUNT_DIR}
 
+    # U-Boot sources boot.scr instead of its built-in load/boot path; ours arms
+    # the WDOG1 watchdog and then resumes it (VUL-228).
+    cp -v ${SCRIPT_SOURCE} ${BOOT_MOUNT_DIR}/boot.scr
+
     # 2. Hardware Detection (Run directly in Linux)
     echo "Probing I2C Bus 1 for WM8904 Codec..."
 

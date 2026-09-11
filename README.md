@@ -60,3 +60,26 @@ gzip -9 imx6ul-var-dart-debian-sd.img
 ```
 
 Lastly, just scp that file to your mac and write the SD Card
+
+# The U-Boot boot script
+
+`bootscripts/boot.cmd` is the source of truth for the U-Boot boot script. The Dockerfile
+compiles it with `mkimage` into `/workdir/rootfs/opt/bootscripts/boot.scr`, and
+`install_debian.sh` copies that onto the eMMC BOOT partition when it flashes a unit.
+
+It arms the WDOG1 watchdog before loading the kernel (VUL-228) and then resumes U-Boot's
+stock load/boot path. Note that U-Boot runs `boot.scr` *instead of* its built-in
+`loadimage`/`mmcboot`, not in addition to it, so the script has to do the boot itself.
+`uEnv.txt` is imported before the script is sourced, so the per-device `fdt_file` written
+by `install_debian.sh` still applies.
+
+If a unit ends up in a watchdog reset loop, interrupt U-Boot over the serial console
+during the 1s boot delay and run `setenv wdog_disable yes; saveenv`. From a booted system
+the equivalent is `fw_setenv wdog_disable yes`.
+
+Fielded units already have a populated BOOT partition, so they only get the script via an
+OTA. To grab the built artifact for the firmware repo's OTA manifest:
+
+```bash
+docker cp $(docker create [:hash]):/workdir/rootfs/opt/bootscripts/boot.scr .
+```

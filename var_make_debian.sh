@@ -46,7 +46,8 @@ readonly G_CROSS_COMPILER_64BIT_PREFIX="aarch64-linux-gnu-"
 #32 bit CROSS_COMPILER config and paths
 readonly G_CROSS_COMPILER_32BIT_NAME="gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf"
 readonly G_CROSS_COMPILER_ARCHIVE_32BIT="${G_CROSS_COMPILER_32BIT_NAME}.tar.xz"
-readonly G_EXT_CROSS_32BIT_COMPILER_LINK="http://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/${G_CROSS_COMPILER_ARCHIVE_32BIT}"
+readonly G_EXT_CROSS_32BIT_COMPILER_LINK="https://raw.githubusercontent.com/respeaker/toolchains/master/${G_CROSS_COMPILER_ARCHIVE_32BIT}"
+readonly G_CROSS_COMPILER_32BIT_SHA256SUM="926b791cd689e8573c3cd912d10e30b7d12a08bb16b9b9eaf598e2074052dc5f"
 readonly G_CROSS_COMPILER_32BIT_PREFIX="arm-linux-gnueabihf-"
 
 readonly G_CROSS_COMPILER_JOPTION="-j 8"
@@ -149,6 +150,7 @@ elif [ "${ARCH_CPU}" = "32BIT" ]; then
 	G_EXT_CROSS_COMPILER_LINK=${G_EXT_CROSS_32BIT_COMPILER_LINK}
 	G_CROSS_COMPILER_ARCHIVE=${G_CROSS_COMPILER_ARCHIVE_32BIT}
 	G_CROSS_COMPILER_PREFIX=${G_CROSS_COMPILER_32BIT_PREFIX}
+	G_CROSS_COMPILER_SHA256SUM=${G_CROSS_COMPILER_32BIT_SHA256SUM}
 	ARCH_ARGS="arm"
 	# Include x11 backend rootfs helper
 	source ${G_VARISCITE_PATH}/console_rootfs.sh
@@ -928,7 +930,8 @@ function cmd_make_deploy()
 	(( `ls ${G_CROSS_COMPILER_PATH} 2>/dev/null | wc -l` == 0 )) && {
 		pr_info "Get and unpack cross compiler";
 		get_remote_file ${G_EXT_CROSS_COMPILER_LINK} \
-			${DEF_SRC_DIR}/${G_CROSS_COMPILER_ARCHIVE}
+			${DEF_SRC_DIR}/${G_CROSS_COMPILER_ARCHIVE} \
+			${G_CROSS_COMPILER_SHA256SUM}
 		tar -xJf ${DEF_SRC_DIR}/${G_CROSS_COMPILER_ARCHIVE} \
 			-C ${G_TOOLS_PATH}/
 	};

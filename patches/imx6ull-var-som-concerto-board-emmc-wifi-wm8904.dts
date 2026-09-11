@@ -166,6 +166,33 @@
         status = "disabled";
 };
 
+/* UART2_TX/RX carry I2C4 instead, so ttymxc1 (the Bluetooth UART) is gone. */
+&uart2 {
+        status = "disabled";
+};
+
+&i2c4 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_i2c4>;
+        clock-frequency = <100000>;
+        status = "okay";
+
+        /* PCF85363A (TSSOP-8) at 7-bit address 0x51 */
+        rtc@51 {
+                compatible = "nxp,pcf85363";
+                reg = <0x51>;
+
+                /* Ignored by the 5.4 driver; honoured if we move to a newer kernel. */
+                quartz-load-femtofarads = <7000>;
+
+                /* INTA (pin 7) on GPIO4_IO27, open drain, active low */
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_java_rtc_int>;
+                interrupt-parent = <&gpio4>;
+                interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+        };
+};
+
 &iomuxc {
     pinctrl-names = "default";
     pinctrl-0 = <&pinctrl_java_hw_ids>;
@@ -222,10 +249,22 @@
 
     pinctrl_java_extra_gpio: javaextragpiogrp {
                 fsl,pins = <
-            MX6UL_PAD_CSI_DATA06__GPIO4_IO27 0x1b0b0
             MX6UL_PAD_CSI_DATA04__GPIO4_IO25 0x1b0b0
             MX6UL_PAD_CSI_DATA05__GPIO4_IO26 0x1b0b0
             MX6UL_PAD_CSI_DATA07__GPIO4_IO28 0x1b0b0
+                >;
+        };
+
+    pinctrl_i2c4: i2c4grp {
+                fsl,pins = <
+            MX6UL_PAD_UART2_TX_DATA__I2C4_SCL 0x4001b8b0
+            MX6UL_PAD_UART2_RX_DATA__I2C4_SDA 0x4001b8b0
+                >;
+        };
+
+    pinctrl_java_rtc_int: javartcintgrp {
+                fsl,pins = <
+            MX6UL_PAD_CSI_DATA06__GPIO4_IO27 0x1b0b0
                 >;
         };
 

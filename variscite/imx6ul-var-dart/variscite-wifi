@@ -95,7 +95,7 @@ wifi_up()
 		echo 1 > /sys/class/gpio/gpio${WIFI_EN_GPIO}/value
 
 		# BT_EN up
-		echo 1 > /sys/class/gpio/gpio${BT_EN_GPIO}/value
+		echo 0 > /sys/class/gpio/gpio${BT_EN_GPIO}/value
 
 		# Wait 150ms at least
 		usleep 200000
@@ -107,7 +107,7 @@ wifi_up()
 		echo 1 > /sys/class/gpio/gpio${WIFI_EN_GPIO}/value
 
 		# BT_EN up
-		echo 1 > /sys/class/gpio/gpio${BT_EN_GPIO}/value
+		echo 0 > /sys/class/gpio/gpio${BT_EN_GPIO}/value
 
 		# Wait 150ms at least
 		usleep 200000

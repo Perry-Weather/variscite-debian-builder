@@ -159,7 +159,7 @@ COPY firmware/scripts/install_manifest.sh /workdir/rootfs/usr/bin/
 COPY firmware /workdir/firmware
 
 RUN ls /workdir/
-RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade_3.1.2-bg95/manifest.tsv /workdir/firmware /workdir/rootfs/
+RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade_3.1.3/manifest.tsv /workdir/firmware /workdir/rootfs/
 
 # Service enablement. One layer on purpose: overlay2 caps an image at 128
 # layers and the per-package protected_install checkpoints are worth more of

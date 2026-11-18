@@ -159,7 +159,7 @@ COPY firmware/scripts/install_manifest.sh /workdir/rootfs/usr/bin/
 COPY firmware /workdir/firmware
 
 RUN ls /workdir/
-RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade_3.1.0/manifest.tsv /workdir/firmware /workdir/rootfs/
+RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade_3.1.2-bg95/manifest.tsv /workdir/firmware /workdir/rootfs/
 
 # Service enablement. One layer on purpose: overlay2 caps an image at 128
 # layers and the per-package protected_install checkpoints are worth more of
@@ -168,7 +168,6 @@ RUN /workdir/firmware/scripts/install_manifest.sh /workdir/firmware/otas/upgrade
 # variscite-bt is removed because it hciattaches /dev/ttymxc1, which no longer
 # exists now that UART2 carries I2C4.
 RUN cd /workdir/rootfs/etc/systemd/system/multi-user.target.wants && \
-    ln -s /lib/systemd/system/memfaultd.service memfaultd.service && \
     ln -s /lib/systemd/system/java_init.service java_init.service && \
     ln -s /lib/systemd/system/api_health.timer api_health.timer && \
     ln -s /lib/systemd/system/fake-hwclock.service fake-hwclock.service && \

@@ -66,7 +66,7 @@
         };
         eth_ls {
             gpios = <&gpio3 25 GPIO_ACTIVE_HIGH>;
-            default-state = "off";
+            default-state = "on";
         };
         wifi_ls {
             gpios = <&gpio3 18 GPIO_ACTIVE_HIGH>;
@@ -305,6 +305,7 @@
 &fec2 {
         pinctrl-0 = <&pinctrl_enet2>, <&pinctrl_java_enet2_gpio>, <&pinctrl_enet2_mdio>;
         phy-reset-gpios=<&gpio1 31 GPIO_ACTIVE_LOW>;
+        phy-reset-post-delay = <1>;
 };
 
 /* wdog to avoid conflicts with ADC Pin */
